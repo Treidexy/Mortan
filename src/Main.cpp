@@ -32,7 +32,7 @@ struct MortanApp : public olc::PixelGameEngine {
 	olc::Decal *decals[PieceCount];
 
 	MortanApp() {
-		sAppName = "Hello, World!";
+		sAppName = "Martin";
 	}
 
 	bool OnUserCreate() override {
