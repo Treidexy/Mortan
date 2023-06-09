@@ -62,7 +62,7 @@ struct MortanApp : public olc::PixelGameEngine {
 	void SelPiece() {
 		selSquare = MouseSquare();
 		selPiece = position.physicalBoard.bySquare[selSquare];
-		if (selPiece == PieceNone) {
+		if (selPiece == PieceNone || PieceColor(selPiece) != position.opp) {
 			selSquare = SquareNone;
 			selPiece = PieceNone;
 			moves = 0;
@@ -77,7 +77,7 @@ struct MortanApp : public olc::PixelGameEngine {
 		Square fromSquare = selSquare;
 		selSquare = MouseSquare();
 		if (fromSquare != selSquare) {
-			position.DoPly(Ply {fromSquare, selSquare});
+			position.DoPly(Ply {fromSquare, selSquare, PieceKindNone});
 		}
 
 		selSquare = SquareNone;
@@ -124,8 +124,12 @@ struct MortanApp : public olc::PixelGameEngine {
 			for (int x = 0; x < 8; x++) {
 				if (noted & BitAt(x + y * 8)) {
 					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f}, olc::RED);
-				}else if ((x + y) % 2 == 1) {
+				} else if ((x + y) % 2 == 1) {
 					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f});
+				}
+
+				if (position.mobilityBoard.byColor[!position.opp] & BitAt(x + y * 8)) {
+					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f}, olc::PixelF(1.0f, 0.0f, 0.0f, 0.5f));
 				}
 
 				if (moves & BitAt(x + y * 8)) {

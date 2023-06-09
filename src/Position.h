@@ -13,6 +13,10 @@ namespace Mortan {
 		BitBoard byKind[PieceKindCount];
 	};
 
+	struct RoyaltyBoard {
+		Square byColor[ColorCount];
+	};
+
 	struct MobilityBoard {
 		BitBoard byColor[ColorCount];
 	};
@@ -32,7 +36,8 @@ namespace Mortan {
 
 		File passant;
 		PhysicalBoard physicalBoard;
-		//MobilityBoard mobilityBoard;
+		RoyaltyBoard royaltyBoard;
+		MobilityBoard mobilityBoard;
 		//ThreatBoard threatBoard;
 		//WarBoard warBoard;
 

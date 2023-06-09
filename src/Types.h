@@ -5,6 +5,7 @@
 namespace Mortan {
 	using BitBoard = uint64_t;
 
+	// DO NOT CHANGE
 	enum Color: int {
 		White,
 		Black,
