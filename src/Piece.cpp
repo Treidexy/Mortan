@@ -55,10 +55,12 @@ namespace {
 		return knightEyes[square];
 	}
 
-	BitBoard PawnMobility(Square, BitBoard ally, BitBoard enemy, File passant) { return 0; }
+	BitBoard PawnMobility(Square, BitBoard ally, BitBoard enemy, File passant, Rank passantRank) {
+		return 0;
+	}
 }
 
-BitBoard Mortan::PieceMobility(PieceKind kind, Square square, BitBoard ally, BitBoard enemy, File passant) {
+BitBoard Mortan::PieceMobility(PieceKind kind, Square square, BitBoard ally, BitBoard enemy, File passant, Rank passantRank) {
 	switch (kind) {
 	case King:
 		return KingMobility(square, ally);
@@ -71,7 +73,7 @@ BitBoard Mortan::PieceMobility(PieceKind kind, Square square, BitBoard ally, Bit
 	case Knight:
 		return KnightMobility(square, ally);
 	case Pawn:
-		return PawnMobility(square, ally, enemy, passant);
+		return PawnMobility(square, ally, enemy, passant, passantRank);
 
 	default:
 		abort();
