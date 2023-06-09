@@ -68,7 +68,8 @@ struct MortanApp : public olc::PixelGameEngine {
 			moves = 0;
 		} else {
 			Color col = PieceColor(selPiece);
-			moves = PieceMobility(KindOf(selPiece), selSquare, position.physicalBoard.byColor[col], position.physicalBoard.byColor[!col], NoFile);
+			moves = PieceMobility(KindOf(selPiece), selSquare, position.physicalBoard.byColor[col], position.physicalBoard.byColor[!col], NoFile)
+				& ~position.physicalBoard.byColor[PieceColor(selPiece)];
 		}
 	}
 
