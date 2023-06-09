@@ -1,6 +1,10 @@
 #pragma once
 
+#include <vector>
+
 #include "Types.h"
+
+#include "Moving.h"
 
 namespace Mortan {
 	struct PhysicalBoard {
@@ -23,6 +27,9 @@ namespace Mortan {
 	};
 
 	struct Position {
+		Move currMove;
+		std::vector<Move> moves;
+
 		File passant;
 		PhysicalBoard physicalBoard;
 		//MobilityBoard mobilityBoard;
@@ -34,6 +41,6 @@ namespace Mortan {
 		static Position Default();
 		void Recalc(); // recalculate from `physicalBoard.bySquare`
 
-		void DoMove(Square from, Square to); // and recalcs
+		void DoPly(Ply ply); // and recalcs
 	};
 }

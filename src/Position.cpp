@@ -30,8 +30,7 @@ Position Position::Default() {
 }
 
 void Position::Recalc() {
-	physicalBoard.byColor[White] = 0;
-	physicalBoard.byColor[Black] = 0;
+	memset(physicalBoard.byColor, 0, sizeof(physicalBoard.byColor));
 	memset(physicalBoard.byKind, 0, sizeof(physicalBoard.byKind));
 
 	for (int y = 0; y < 8; y++) {
@@ -47,8 +46,18 @@ void Position::Recalc() {
 	}
 }
 
-void Position::DoMove(Square from, Square to) {
-	physicalBoard.bySquare[to] = physicalBoard.bySquare[from];
-	physicalBoard.bySquare[from] = PieceNone;
+void Position::DoPly(Ply ply) {
+	physicalBoard.bySquare[ply.to] = physicalBoard.bySquare[ply.from];
+	physicalBoard.bySquare[ply.from] = PieceNone;
 	Recalc();
+
+	currMove.byColor[opp] = ply;
+
+	if (opp + 1 < ColorCount) {
+		opp = (Color) (opp + 1);
+	} else {
+		opp = White;
+		moves.push_back(currMove);
+		currMove = {}; // unnecessary?
+	}
 }

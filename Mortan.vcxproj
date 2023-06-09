@@ -147,6 +147,7 @@
     <ClCompile Include="src\Position.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Moving.h" />
     <ClInclude Include="src\olcPixelGameEngine.h" />
     <ClInclude Include="src\Piece.h" />
     <ClInclude Include="src\Position.h" />

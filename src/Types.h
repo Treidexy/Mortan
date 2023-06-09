@@ -5,7 +5,7 @@
 namespace Mortan {
 	using BitBoard = uint64_t;
 
-	enum Color {
+	enum Color: int {
 		White,
 		Black,
 
@@ -44,7 +44,7 @@ namespace Mortan {
 		PieceNone,
 	};
 
-	enum Square {
+	enum Square: int {
 		A1Sq, A2Sq, A3Sq, A4Sq, A5Sq, A6Sq, A7Sq, A8Sq,
 		B1Sq, B2Sq, B3Sq, B4Sq, B5Sq, B6Sq, B7Sq, B8Sq,
 		C1Sq, C2Sq, C3Sq, C4Sq, C5Sq, C6Sq, C7Sq, C8Sq,
@@ -58,13 +58,13 @@ namespace Mortan {
 		SquareNone = 64,
 	};
 
-	enum Rank {
+	enum Rank: int {
 		Rank1, Rank2, Rank3, Rank4, Rank5, Rank6, Rank7, Rank8,
 
 		NoRank = 8,
 	};
 
-	enum File {
+	enum File: int {
 		AFile = 8 * 0,
 		BFile = 8 * 1,
 		CFile = 8 * 2,
