@@ -105,27 +105,35 @@ namespace {
 		eyeRays[SouthWest][x + y * 8] = 0;
 
 		for (int i = 1; i < 8; i++) {
+			bool onEast = x >= i; // x - i >= 0
+			bool onWest = x + i < 8;
+
 			if (y + i < 8) {
 				eyeRays[North][x + y * 8] |= BitAt(x + (y + i) * 8);
 
-				// x - i >= 0
-				if (x >= i) {
+				if (onEast) {
 					eyeRays[NorthEast][x + y * 8] |= BitAt((x - i) + (y + i) * 8);
 				}
-				if (x + i < 8) {
+				if (onWest) {
 					eyeRays[NorthWest][x + y * 8] |= BitAt((x + i) + (y + i) * 8);
 				}
+			}
+
+			if (onEast) {
+				eyeRays[East][x + y * 8] |= BitAt((x - i) + y * 8);
+			}
+			if (onWest) {
+				eyeRays[West][x + y * 8] |= BitAt((x + i) + y * 8);
 			}
 
 			// y - i >= 0
 			if (y >= i) {
 				eyeRays[South][x + y * 8] |= BitAt(x + (y - i) * 8);
 
-				// x - i >= 0
-				if (x >= i) {
+				if (onEast) {
 					eyeRays[SouthEast][x + y * 8] |= BitAt((x - i) + (y - i) * 8);
 				}
-				if (x + i < 8) {
+				if (onWest) {
 					eyeRays[SouthWest][x + y * 8] |= BitAt((x + i) + (y - i) * 8);
 				}
 			}
