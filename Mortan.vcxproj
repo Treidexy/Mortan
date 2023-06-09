@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\PieceEyes.cpp" />
+    <ClCompile Include="src\Eyes.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Piece.cpp" />
     <ClCompile Include="src\Position.cpp" />

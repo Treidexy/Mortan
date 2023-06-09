@@ -14,11 +14,11 @@ namespace {
 	}
 
 	BitBoard RookMobility(Square square, BitBoard ally, BitBoard enemy) {
-		return rookEyes[square];
+		return eyeRays[North][square] | eyeRays[South][square] | eyeRays[East][square] | eyeRays[West][square];
 	}
 
 	BitBoard BishopMobility(Square square, BitBoard ally, BitBoard enemy) {
-		return bishopEyes[square];
+		return eyeRays[NorthEast][square] | eyeRays[NorthWest][square] | eyeRays[SouthEast][square] | eyeRays[SouthWest][square];
 	}
 
 	BitBoard QueenMobility(Square square, BitBoard ally, BitBoard enemy) {

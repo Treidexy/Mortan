@@ -76,4 +76,20 @@ namespace Mortan {
 
 		NoFile = 64,
 	};
+
+	// North = y++, East = x--,
+	enum Direction {
+		North,
+		South,
+		East,
+		West,
+
+		NorthEast,
+		NorthWest,
+		SouthEast,
+		SouthWest,
+
+		DirectionCount = 8,
+		DirectionNone = 8,
+	};
 }

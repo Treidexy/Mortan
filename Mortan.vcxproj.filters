@@ -24,7 +24,7 @@
     <ClCompile Include="src\Position.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\PieceEyes.cpp">
+    <ClCompile Include="src\Eyes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

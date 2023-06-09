@@ -5,9 +5,8 @@
 using namespace Mortan;
 
 BitBoard Mortan::kingEyes[SquareCount];
-BitBoard Mortan::rookEyes[SquareCount];
-BitBoard Mortan::bishopEyes[SquareCount];
 BitBoard Mortan::knightEyes[SquareCount];
+BitBoard Mortan::eyeRays[DirectionCount][SquareCount];
 
 namespace {
 	BitBoard KingEyes(int x, int y) {
@@ -42,39 +41,6 @@ namespace {
 
 			if (y < 7) {
 				mask |= BitAt((x + 1) + (y + 1) * 8);
-			}
-		}
-
-		return mask;
-	}
-
-	BitBoard RookEyes(int x, int y) {
-		BitBoard mask = 0;
-
-		mask |= 0xFFull << (y * 8);
-		mask |= 0x101010101010101ull << x;
-
-		return mask;
-	}
-
-	BitBoard BishopEyes(int x, int y) {
-		BitBoard mask = 0;
-
-		for (int i = 1; i < 8; i++) {
-			if (x >= i && y >= i) {
-				mask |= BitAt((x - i) + (y - i) * 8);
-			}
-
-			if (x >= i && y <= 7 - i) {
-				mask |= BitAt((x - i) + (y + i) * 8);
-			}
-
-			if (x <= 7 - i && y >= i) {
-				mask |= BitAt((x + i) + (y - i) * 8);
-			}
-
-			if (x <= 7 - i && y <= 7 - i) {
-				mask |= BitAt((x + i) + (y + i) * 8);
 			}
 		}
 
@@ -126,14 +92,53 @@ namespace {
 
 		return  mask;
 	}
+
+	void InitRaysAt(int x, int y) {
+		eyeRays[North][x + y * 8] = 0;
+		eyeRays[South][x + y * 8] = 0;
+		eyeRays[East][x + y * 8] = 0;
+		eyeRays[West][x + y * 8] = 0;
+
+		eyeRays[NorthEast][x + y * 8] = 0;
+		eyeRays[NorthWest][x + y * 8] = 0;
+		eyeRays[SouthEast][x + y * 8] = 0;
+		eyeRays[SouthWest][x + y * 8] = 0;
+
+		for (int i = 1; i < 8; i++) {
+			if (y + i < 8) {
+				eyeRays[North][x + y * 8] |= BitAt(x + (y + i) * 8);
+
+				// x - i >= 0
+				if (x >= i) {
+					eyeRays[NorthEast][x + y * 8] |= BitAt((x - i) + (y + i) * 8);
+				}
+				if (x + i < 8) {
+					eyeRays[NorthWest][x + y * 8] |= BitAt((x + i) + (y + i) * 8);
+				}
+			}
+
+			// y - i >= 0
+			if (y >= i) {
+				eyeRays[South][x + y * 8] |= BitAt(x + (y - i) * 8);
+
+				// x - i >= 0
+				if (x >= i) {
+					eyeRays[SouthEast][x + y * 8] |= BitAt((x - i) + (y - i) * 8);
+				}
+				if (x + i < 8) {
+					eyeRays[SouthWest][x + y * 8] |= BitAt((x + i) + (y - i) * 8);
+				}
+			}
+		}
+	}
 }
 
 void Mortan::InitEyes() {
 	for (int y = 0; y < 8; y++) {
 		for (int x = 0; x < 8; x++) {
+			InitRaysAt(x, y);
+
 			kingEyes[x + y * 8] = KingEyes(x, y);
-			rookEyes[x + y * 8] = RookEyes(x, y);
-			bishopEyes[x + y * 8] = BishopEyes(x, y);
 			knightEyes[x + y * 8] = KnightEyes(x, y);
 		}
 	}

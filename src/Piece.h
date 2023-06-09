@@ -4,11 +4,11 @@
 
 namespace Mortan {
 	extern BitBoard kingEyes[SquareCount];
-	extern BitBoard rookEyes[SquareCount];
-	extern BitBoard bishopEyes[SquareCount];
 	extern BitBoard knightEyes[SquareCount];
+	extern BitBoard eyeRays[DirectionCount][SquareCount];
 
 	void InitEyes();
+
 
 	BitBoard PieceMobility(PieceKind, Square, BitBoard ally, BitBoard enemy, File passant);
 
