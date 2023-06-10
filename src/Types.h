@@ -5,7 +5,8 @@
 namespace Mortan {
 	using BitBoard = uint64_t;
 
-	// DO NOT CHANGE
+	// DO NOT CHANGE ANY: int
+
 	enum Color: int {
 		White,
 		Black,
@@ -94,13 +95,17 @@ namespace Mortan {
 		DirectionNone = 8,
 	};
 
-	enum MoveType {
-		AllMove,
-		QuiteMove,
-		AttackMove,
-		ThreatMove, // AttackMove & enemy
-		DefenceMove,
+	enum Castling: int {
+		KingSide,
+		QueenSide,
 
-		MoveTypeCount = 2,
+		CastlingCount = 2,
+		CastlingNone = 2,
 	};
+
+	
+	// cuz C++ is Forking GARBAGE
+	inline Castling operator |=(Castling &c, const Castling &o) {
+		return c = Castling((int)c | o);
+	}
 }

@@ -1,81 +1,204 @@
 #include "Position.h"
 
 #include <memory>
+#include <iostream>
 
 #include "Piece.h"
 #include "Util.h"
 
 using namespace Mortan;
 
-Position Position::Default() {
+Position Position::FromFEN(const char * const fen) {
+	const char *p = fen;
+
+	char c;
+	int idx = 63;
 	Position position = {};
-	position.passant = NoFile;
-	Piece bySquare[SquareCount] = {
-		WRook, WKnight, WBishop, WQueen, WKing, WBishop, WKnight, WRook,
-		WPawn, WPawn, WPawn, WPawn, WPawn, WPawn, WPawn, WPawn,
-		PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone,
-		PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone,
-		PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone,
-		PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone, PieceNone,
-		BPawn, BPawn, BPawn, BPawn, BPawn, BPawn, BPawn, BPawn,
-		BRook, BKnight, BBishop, BQueen, BKing, BBishop, BKnight, BRook
-	};
-	
-	std::memcpy(position.physicalBoard.bySquare, bySquare, sizeof(bySquare));
-	position.opp = White;
 
-	position.Recalc();
+	while (idx >= 0) {
+		switch (c = *p++) {
+		case 'K':
+			position.bySquare[idx] = WKing;
+			position.byColor[White] |= BitAt(idx);
+			position.byKind[King] |= BitAt(idx);
+			idx--;
+			break;
+		case 'Q':
+			position.bySquare[idx] = WQueen;
+			position.byColor[White] |= BitAt(idx);
+			position.byKind[Queen] |= BitAt(idx);
+			idx--;
+			break;
+		case 'R':
+			position.bySquare[idx] = WRook;
+			position.byColor[White] |= BitAt(idx);
+			position.byKind[Rook] |= BitAt(idx);
+			idx--;
+			break;
+		case 'B':
+			position.bySquare[idx] = WBishop;
+			position.byColor[White] |= BitAt(idx);
+			position.byKind[Bishop] |= BitAt(idx);
+			idx--;
+			break;
+		case 'N':
+			position.bySquare[idx] = WKnight;
+			position.byColor[White] |= BitAt(idx);
+			position.byKind[Knight] |= BitAt(idx);
+			idx--;
+			break;
+		case 'P':
+			position.bySquare[idx] = WPawn;
+			position.byColor[White] |= BitAt(idx);
+			position.byKind[Pawn] |= BitAt(idx);
+			idx--;
+			break;
+		case 'k':
+			position.bySquare[idx] = BKing;
+			position.byColor[Black] |= BitAt(idx);
+			position.byKind[King] |= BitAt(idx);
+			idx--;
+			break;
+		case 'q':
+			position.bySquare[idx] = BQueen;
+			position.byColor[Black] |= BitAt(idx);
+			position.byKind[Queen] |= BitAt(idx);
+			idx--;
+			break;
+		case 'r':
+			position.bySquare[idx] = BRook;
+			position.byColor[Black] |= BitAt(idx);
+			position.byKind[Rook] |= BitAt(idx);
+			idx--;
+			break;
+		case 'b':
+			position.bySquare[idx] = BBishop;
+			position.byColor[White] |= BitAt(idx);
+			position.byKind[Bishop] |= BitAt(idx);
+			idx--;
+			break;
+		case 'n':
+			position.bySquare[idx] = BKnight;
+			position.byColor[Black] |= BitAt(idx);
+			position.byKind[Knight] |= BitAt(idx);
+			idx--;
+			break;
+		case 'p':
+			position.bySquare[idx] = BPawn;
+			position.byColor[Black] |= BitAt(idx);
+			position.byKind[Pawn] |= BitAt(idx);
+			idx--;
+			break;
 
-	return position;
-}
-
-template<PieceKind Kind>
-void Position::RecalcKind() {
-	BitBoard b = physicalBoard.byKind[Kind];
-
-	while (b) {
-		Square square = PopWeak(&b);
-
-		BitBoard moves = PieceMoves<Kind>(square, physicalBoard.byColor[White] | physicalBoard.byColor[Black]);
-		mobilityBoard.byColor[White] |= moves;
-	}
-}
-
-template<>
-void Position::RecalcKind<Pawn>() {
-	BitBoard b = physicalBoard.byKind[Pawn];
-
-	while (b) {
-		Square square = PopWeak(&b);
-	}
-}
-
-void Position::Recalc() {
-	memset(physicalBoard.byColor, 0, sizeof(physicalBoard.byColor));
-	memset(physicalBoard.byKind, 0, sizeof(physicalBoard.byKind));
-
-	memset(mobilityBoard.byColor, 0, sizeof(mobilityBoard.byColor));
-
-	for (int y = 0; y < 8; y++) {
-		for (int x = 0; x < 8; x++) {
-			Piece piece = physicalBoard.bySquare[x + y * 8];
-			if (piece != PieceNone) {
-				Color color = PieceColor(piece);
-				physicalBoard.byColor[color] |= BitAt(x + y * 8);
-
-				PieceKind kind = KindOf(piece);
-				physicalBoard.byKind[kind] |= BitAt(x + y * 8);
+		case '/':
+			if (idx % 8 != 7) {
+				std::cerr << "error reading fen: idx = " << idx << ", but not end of rank\nFEN string: " << fen << "\n";
 			}
+			break;
+
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+			while (c-- != '0') {
+				position.bySquare[idx] = PieceNone;
+				idx--;
+			}
+			break;
+
+		default:
+			std::cerr << "error reading fen: unknown board '" << c << "'\nFEN string: " << fen << "\n";
+			break;
 		}
 	}
 
-	
+	p++;
+	switch (c = *p++) {
+	case 'w':
+		position.opp = White;
+		break;
+	case 'b':
+		position.opp = Black;
+		break;
+	default:
+		std::cerr << "error reading fen: unknown side to move '" << c << "'\nFEN string: " << fen << "\n";
+		break;
+	}
+
+	p++;
+	while (*p != ' ') {
+		switch (c = *p++) {
+		case 'K':
+			position.castling[White] |= KingSide;
+			break;
+		case 'Q':
+			position.castling[White] |= QueenSide;
+			break;
+		case 'k':
+			position.castling[Black] |= KingSide;
+			break;
+		case 'q':
+			position.castling[Black] |= QueenSide;
+			break;
+		case '-':
+			break;
+		default:
+			std::cerr << "error reading fen: unknown castling '" << c << "'\nFEN string: " << fen << "\n";
+			break;
+		}
+	}
+
+	p++;
+	if (*p == '-') {
+		p++;
+	} else {
+		position.passant = File((*p - 'a') * 8);
+		p++;
+	}
+
+	//p++;
+	//if (*p == '-') {
+	//	p++;
+	//} else {
+	//	position.halfmoveClock = *p - '0';
+	//	p++;
+	//}
+
+	//p++;
+	//if (*p == '-') {
+	//	p++;
+	//} else {
+	//	position.fullmoveNumber = *p - '0';
+	//	p++;
+	//}
+
+	return position;	
+}
+
+Position Position::Default() {
+	return FromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 }
 
 void Position::DoPly(Ply ply) {
-	physicalBoard.bySquare[ply.to] = physicalBoard.bySquare[ply.from];
-	physicalBoard.bySquare[ply.from] = PieceNone;
-	Recalc();
+	PieceKind kind = KindOf(bySquare[ply.from]);
+	PieceKind captureKind = KindOf(bySquare[ply.from]);
+
+	bySquare[ply.to] = bySquare[ply.from];
+	bySquare[ply.from] = PieceNone;
+	
+	byColor[opp] &= ~BitAt(ply.from);
+	byColor[opp] |= BitAt(ply.to);
+	byColor[!opp] &= ~BitAt(ply.to);
+
+	byKind[kind] &= ~BitAt(ply.from);
+	byKind[kind] |= BitAt(ply.to);
+	if (captureKind != PieceKindNone) {
+		byKind[captureKind] &= ~BitAt(ply.to);
+	}
 
 	currMove.byColor[opp] = ply;
 

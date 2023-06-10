@@ -4,7 +4,3 @@
 
 using namespace Mortan;
 
-template<MoveType Type>
-BitBoard Mortan::PieceMoves(const Position &position, Square square) {
-
-}

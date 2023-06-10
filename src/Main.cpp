@@ -61,15 +61,15 @@ struct MortanApp : public olc::PixelGameEngine {
 
 	void SelPiece() {
 		selSquare = MouseSquare();
-		selPiece = position.physicalBoard.bySquare[selSquare];
+		selPiece = position.bySquare[selSquare];
 		if (selPiece == PieceNone || PieceColor(selPiece) != position.opp) {
 			selSquare = SquareNone;
 			selPiece = PieceNone;
 			moves = 0;
 		} else {
 			Color col = PieceColor(selPiece);
-			moves = PieceMobility(KindOf(selPiece), selSquare, position.physicalBoard.byColor[col], position.physicalBoard.byColor[!col], NoFile, col == White ? Rank2 : Rank7)
-				& ~position.physicalBoard.byColor[PieceColor(selPiece)];
+			//moves = PieceMobility(KindOf(selPiece), selSquare, position.byColor[col], position.byColor[!col], NoFile, col == White ? Rank2 : Rank7)
+			//	& ~position.byColor[PieceColor(selPiece)];
 		}
 	}
 
@@ -128,10 +128,6 @@ struct MortanApp : public olc::PixelGameEngine {
 					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f});
 				}
 
-				if (position.mobilityBoard.byColor[!position.opp] & BitAt(x + y * 8)) {
-					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f}, olc::PixelF(1.0f, 0.0f, 0.0f, 0.5f));
-				}
-
 				if (moves & BitAt(x + y * 8)) {
 					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f}, olc::GREEN);
 				}
@@ -142,7 +138,7 @@ struct MortanApp : public olc::PixelGameEngine {
 
 		for (int y = 0; y < 8; y++) {
 			for (int x = 0; x < 8; x++) {
-				Piece piece = position.physicalBoard.bySquare[x + y * 8];
+				Piece piece = position.bySquare[x + y * 8];
 				if (piece != PieceNone) {
 					DrawDecal({x * 90.0f, (7 - y) * 90.0f}, decals[piece]);
 				}
