@@ -8,29 +8,6 @@
 
 using namespace Mortan;
 
-namespace {
-	template<Direction dir>
-	BitBoard RayMobilityWithBlockers(Square square, BitBoard pieces) {
-		BitBoard mask = 0;
-		mask |= eyeRays[dir][square];
-		BitBoard blockers = eyeRays[dir][square] & pieces;
-		if (blockers) {
-			Square blocker;
-			if constexpr (dir == North || dir == West || dir == NorthEast || dir == NorthWest) {
-				blocker = weakBit(blockers);
-			} else if constexpr (dir == South || dir == East || dir == SouthEast || dir == SouthWest) {
-				blocker = strongBit(blockers);
-			} else {
-				abort();
-			}
-
-			mask &= ~eyeRays[dir][blocker];
-		}
-
-		return mask;
-	}
-}
-
 Position Position::FromFEN(const char * const fen) {
 	const char *p = fen;
 

@@ -10,6 +10,8 @@ namespace Mortan {
 	extern BitBoard eyeRays[DirectionCount][SquareCount];
 
 	void InitEyes();
+	template<Direction dir>
+	BitBoard RayMobilityWithBlockers(Square square, BitBoard pieces);
 
 	inline Color PieceColor(Piece piece) {
 		if (piece < BKing) {
