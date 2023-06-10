@@ -8,6 +8,29 @@
 
 using namespace Mortan;
 
+namespace {
+	template<Direction dir>
+	BitBoard RayMobilityWithBlockers(Square square, BitBoard pieces) {
+		BitBoard mask = 0;
+		mask |= eyeRays[dir][square];
+		BitBoard blockers = eyeRays[dir][square] & pieces;
+		if (blockers) {
+			Square blocker;
+			if constexpr (dir == North || dir == West || dir == NorthEast || dir == NorthWest) {
+				blocker = weakBit(blockers);
+			} else if constexpr (dir == South || dir == East || dir == SouthEast || dir == SouthWest) {
+				blocker = strongBit(blockers);
+			} else {
+				abort();
+			}
+
+			mask &= ~eyeRays[dir][blocker];
+		}
+
+		return mask;
+	}
+}
+
 Position Position::FromFEN(const char * const fen) {
 	const char *p = fen;
 
@@ -183,9 +206,34 @@ Position Position::Default() {
 	return FromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 }
 
+int Position::Preassure(Square square, Color myColor) {
+	int preassure = 0;
+
+	preassure += Count(knightEyes[square] & byKind[Knight] & byColor[!myColor]);
+
+	BitBoard lateralEnemies = (byKind[Rook] | byKind[Queen]) & byColor[!myColor];
+	BitBoard diagonalEnemies = (byKind[Bishop] | byKind[Queen]) & byColor[!myColor];
+
+	// double exclam to normalize to 1 or 0
+	preassure += !!(RayMobilityWithBlockers<North>(square, board) & lateralEnemies);
+	preassure += !!(RayMobilityWithBlockers<South>(square, board) & lateralEnemies);
+	preassure += !!(RayMobilityWithBlockers<East>(square, board) & lateralEnemies);
+	preassure += !!(RayMobilityWithBlockers<West>(square, board) & lateralEnemies);
+
+	preassure += !!(RayMobilityWithBlockers<NorthEast>(square, board) & diagonalEnemies);
+	preassure += !!(RayMobilityWithBlockers<NorthWest>(square, board) & diagonalEnemies);
+	preassure += !!(RayMobilityWithBlockers<SouthEast>(square, board) & diagonalEnemies);
+	preassure += !!(RayMobilityWithBlockers<SouthWest>(square, board) & diagonalEnemies);
+
+	return preassure;
+}
+
 void Position::DoPly(Ply ply) {
 	PieceKind kind = KindOf(bySquare[ply.from]);
 	PieceKind captureKind = KindOf(bySquare[ply.from]);
+
+	board &= ~BitAt(ply.from);
+	board |= BitAt(ply.to);
 
 	bySquare[ply.to] = bySquare[ply.from];
 	bySquare[ply.from] = PieceNone;

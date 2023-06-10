@@ -8,8 +8,8 @@ namespace Mortan {
 	// DO NOT CHANGE ANY: int
 
 	enum Color: int {
-		White,
-		Black,
+		White = 0,
+		Black = 1,
 
 		ColorCount = 2,
 		ColorNone,
@@ -96,8 +96,8 @@ namespace Mortan {
 	};
 
 	enum Castling: int {
-		KingSide,
-		QueenSide,
+		KingSide = 0,
+		QueenSide = 1,
 
 		CastlingCount = 2,
 		CastlingNone = 2,

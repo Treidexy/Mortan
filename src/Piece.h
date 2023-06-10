@@ -11,8 +11,6 @@ namespace Mortan {
 
 	void InitEyes();
 
-	BitBoard PieceMobility(PieceKind, Square, BitBoard ally, BitBoard enemy, Rank passantRank);
-
 	inline Color PieceColor(Piece piece) {
 		if (piece < BKing) {
 			return White;

@@ -16,16 +16,17 @@ namespace Mortan {
 
 		Castling castling[ColorCount];
 
+		BitBoard board;
 		Piece bySquare[SquareCount];
 		BitBoard byColor[ColorCount];
 		BitBoard byKind[PieceKindCount];
 
 		Color opp;
 
-		static Position Default();
 		static Position FromFEN(const char *fen);
+		static Position Default();
 
-		bool IsSafe(Square); // is there any attack on this square?
+		int Preassure(Square, Color myColor); // apex search
 
 		void DoPly(Ply); // and recalcs
 	};
