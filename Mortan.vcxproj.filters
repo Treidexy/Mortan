@@ -18,13 +18,16 @@
     <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Piece.cpp">
+    <ClCompile Include="src\Piece_old.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Position.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Eyes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Piece.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

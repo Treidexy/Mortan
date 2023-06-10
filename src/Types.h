@@ -93,4 +93,14 @@ namespace Mortan {
 		DirectionCount = 8,
 		DirectionNone = 8,
 	};
+
+	enum MoveType {
+		AllMove,
+		QuiteMove,
+		AttackMove,
+		ThreatMove, // AttackMove & enemy
+		DefenceMove,
+
+		MoveTypeCount = 2,
+	};
 }
