@@ -7,6 +7,8 @@ namespace Mortan {
 		Square from;
 		Square to;
 
+		bool enPassant;
+		Castling castling;
 		PieceKind promotion;
 	};
 

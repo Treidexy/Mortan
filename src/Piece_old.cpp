@@ -12,27 +12,6 @@ namespace {
 		return kingEyes[square];
 	}
 
-	template<Direction dir>
-	BitBoard RayMobilityWithBlockers(Square square, BitBoard pieces) {
-		BitBoard mask = 0;
-		mask |= eyeRays[dir][square];
-		BitBoard blockers = eyeRays[dir][square] & pieces;
-		if (blockers) {
-			Square blocker;
-			if constexpr (dir == North || dir == West || dir == NorthEast || dir == NorthWest) {
-				blocker = WeakBit(blockers);
-			} else if constexpr (dir == South || dir == East || dir == SouthEast || dir == SouthWest) {
-				blocker = StrongBit(blockers);
-			} else {
-				abort();
-			}
-
-			mask &= ~eyeRays[dir][blocker];
-		}
-
-		return mask;
-	}
-
 	BitBoard RookMobility(Square square, BitBoard ally, BitBoard enemy) {
 		return RayMobilityWithBlockers<North>(square, ally | enemy) |
 			RayMobilityWithBlockers<South>(square, ally | enemy) |

@@ -12,7 +12,7 @@ namespace Mortan {
 		Move currMove;
 		std::vector<Move> moves;
 
-		File passant;
+		Square passant;
 
 		Castling castling[ColorCount];
 

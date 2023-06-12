@@ -47,36 +47,43 @@ namespace Mortan {
 	};
 
 	enum Square: int {
-		A1Sq, A2Sq, A3Sq, A4Sq, A5Sq, A6Sq, A7Sq, A8Sq,
-		B1Sq, B2Sq, B3Sq, B4Sq, B5Sq, B6Sq, B7Sq, B8Sq,
-		C1Sq, C2Sq, C3Sq, C4Sq, C5Sq, C6Sq, C7Sq, C8Sq,
-		D1Sq, D2Sq, D3Sq, D4Sq, D5Sq, D6Sq, D7Sq, D8Sq,
-		E1Sq, E2Sq, E3Sq, E4Sq, E5Sq, E6Sq, E7Sq, E8Sq,
-		F1Sq, F2Sq, F3Sq, F4Sq, F5Sq, F6Sq, F7Sq, F8Sq,
-		G1Sq, G2Sq, G3Sq, G4Sq, G5Sq, G6Sq, G7Sq, G8Sq,
-		H1Sq, H2Sq, H3Sq, H4Sq, H5Sq, H6Sq, H7Sq, H8Sq,
+		A1Sq, B1Sq, C1Sq, D1Sq, E1Sq, F1Sq, G1Sq, H1Sq,
+		A2Sq, B2Sq, C2Sq, D2Sq, E2Sq, F2Sq, G2Sq, H2Sq,
+		A3Sq, B3Sq, C3Sq, D3Sq, E3Sq, F3Sq, G3Sq, H3Sq,
+		A4Sq, B4Sq, C4Sq, D4Sq, E4Sq, F4Sq, G4Sq, H4Sq,
+		A5Sq, B5Sq, C5Sq, D5Sq, E5Sq, F5Sq, G5Sq, H5Sq,
+		A6Sq, B6Sq, C6Sq, D6Sq, E6Sq, F6Sq, G6Sq, H6Sq,
+		A7Sq, B7Sq, C7Sq, D7Sq, E7Sq, F7Sq, G7Sq, H7Sq,
+		A8Sq, B8Sq, C8Sq, D8Sq, E8Sq, F8Sq, G8Sq, H8Sq,
 
 		SquareCount = 64,
 		SquareNone = 64,
 	};
 
 	enum Rank: int {
-		Rank1, Rank2, Rank3, Rank4, Rank5, Rank6, Rank7, Rank8,
+		Rank1 = 8 * 0,
+		Rank2 = 8 * 1,
+		Rank3 = 8 * 2,
+		Rank4 = 8 * 3,
+		Rank5 = 8 * 4,
+		Rank6 = 8 * 5,
+		Rank7 = 8 * 6,
+		Rank8 = 8 * 7,
 
-		NoRank = 8,
+		NoRank = 64,
 	};
 
 	enum File: int {
-		AFile = 8 * 0,
-		BFile = 8 * 1,
-		CFile = 8 * 2,
-		DFile = 8 * 3,
-		EFile = 8 * 4,
-		FFile = 8 * 5,
-		GFile = 8 * 6,
-		HFile = 8 * 7,
+		AFile,
+		BFile,
+		CFile,
+		DFile,
+		EFile,
+		FFile,
+		GFile,
+		HFile,
 
-		NoFile = 64,
+		NoFile = 8,
 	};
 
 	// North = y++, East = x--,
@@ -96,16 +103,14 @@ namespace Mortan {
 	};
 
 	enum Castling: int {
-		KingSide = 0,
-		QueenSide = 1,
-
-		CastlingCount = 2,
-		CastlingNone = 2,
+		CastlingNone = 0,
+		KingSide = 1 << 0,
+		QueenSide = 1 << 1,
 	};
 
 	
 	// cuz C++ is Forking GARBAGE
 	inline Castling operator |=(Castling &c, const Castling &o) {
-		return c = Castling((int)c | o);
+		return c = Castling(c | o);
 	}
 }

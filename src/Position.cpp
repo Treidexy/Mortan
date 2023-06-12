@@ -155,9 +155,14 @@ Position Position::FromFEN(const char * const fen) {
 	p++;
 	if (*p == '-') {
 		p++;
+		position.passant = SquareNone;
 	} else {
-		position.passant = File((*p - 'a') * 8);
+		File file = File(*p - 'a');
 		p++;
+		Rank rank = Rank((*p - '1') * 8);
+		p++;
+
+		position.passant = Square(file + rank);
 	}
 
 	//p++;
@@ -224,6 +229,8 @@ void Position::DoPly(Ply ply) {
 	if (captureKind != PieceKindNone) {
 		byKind[captureKind] &= ~BitAt(ply.to);
 	}
+
+	passant = SquareNone;
 
 	currMove.byColor[opp] = ply;
 

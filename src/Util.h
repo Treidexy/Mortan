@@ -44,6 +44,6 @@ namespace Mortan {
 	}
 
 	inline int Count(BitBoard b) {
-		return __popcnt64(b);
+		return (int) __popcnt64(b);
 	}
 }
