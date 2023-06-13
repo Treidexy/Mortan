@@ -21,72 +21,84 @@ Position Position::FromFEN(const char * const fen) {
 			position.bySquare[idx] = WKing;
 			position.byColor[White] |= BitAt(idx);
 			position.byKind[King] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 		case 'Q':
 			position.bySquare[idx] = WQueen;
 			position.byColor[White] |= BitAt(idx);
 			position.byKind[Queen] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 		case 'R':
 			position.bySquare[idx] = WRook;
 			position.byColor[White] |= BitAt(idx);
 			position.byKind[Rook] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 		case 'B':
 			position.bySquare[idx] = WBishop;
 			position.byColor[White] |= BitAt(idx);
 			position.byKind[Bishop] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 		case 'N':
 			position.bySquare[idx] = WKnight;
 			position.byColor[White] |= BitAt(idx);
 			position.byKind[Knight] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 		case 'P':
 			position.bySquare[idx] = WPawn;
 			position.byColor[White] |= BitAt(idx);
 			position.byKind[Pawn] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 		case 'k':
 			position.bySquare[idx] = BKing;
 			position.byColor[Black] |= BitAt(idx);
 			position.byKind[King] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 		case 'q':
 			position.bySquare[idx] = BQueen;
 			position.byColor[Black] |= BitAt(idx);
 			position.byKind[Queen] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 		case 'r':
 			position.bySquare[idx] = BRook;
 			position.byColor[Black] |= BitAt(idx);
 			position.byKind[Rook] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 		case 'b':
 			position.bySquare[idx] = BBishop;
 			position.byColor[White] |= BitAt(idx);
 			position.byKind[Bishop] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 		case 'n':
 			position.bySquare[idx] = BKnight;
 			position.byColor[Black] |= BitAt(idx);
 			position.byKind[Knight] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 		case 'p':
 			position.bySquare[idx] = BPawn;
 			position.byColor[Black] |= BitAt(idx);
 			position.byKind[Pawn] |= BitAt(idx);
+			position.board |= BitAt(idx);
 			idx--;
 			break;
 

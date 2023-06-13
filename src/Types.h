@@ -83,6 +83,7 @@ namespace Mortan {
 		GFile,
 		HFile,
 
+		FileCount = 8,
 		NoFile = 8,
 	};
 

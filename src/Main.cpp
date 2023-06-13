@@ -23,6 +23,7 @@ struct MortanApp : public olc::PixelGameEngine {
 	Square selSquare = SquareNone;
 	Piece selPiece = PieceNone;
 	BitBoard moves = 0;
+	BitBoard attacks = 0;
 
 	BitBoard noted = 0;
 	Square arrowSelSquare = SquareNone;
@@ -62,14 +63,15 @@ struct MortanApp : public olc::PixelGameEngine {
 	void SelPiece() {
 		selSquare = MouseSquare();
 		selPiece = position.bySquare[selSquare];
-		if (selPiece == PieceNone || PieceColor(selPiece) != position.opp) {
+		if (selPiece == PieceNone || (ColorOf(selPiece) != position.opp && false)) {
 			selSquare = SquareNone;
 			selPiece = PieceNone;
 			moves = 0;
+			attacks = 0;
 		} else {
-			Color col = PieceColor(selPiece);
-			//moves = PieceMobility(KindOf(selPiece), selSquare, position.byColor[col], position.byColor[!col], NoFile, col == White ? Rank2 : Rank7)
-			//	& ~position.byColor[PieceColor(selPiece)];
+			Color col = ColorOf(selPiece);
+			moves = PieceQuites(position, selSquare);
+			attacks = PieceAttacks(position, selSquare);
 		}
 	}
 
@@ -83,6 +85,7 @@ struct MortanApp : public olc::PixelGameEngine {
 		selSquare = SquareNone;
 		selPiece = PieceNone;
 		moves = 0;
+		attacks = 0;
 	}
 
 	bool OnUserUpdate(float fElapsedTime) override {
@@ -130,6 +133,10 @@ struct MortanApp : public olc::PixelGameEngine {
 
 				if (moves & BitAt(x + y * 8)) {
 					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f}, olc::GREEN);
+				}
+
+				if (attacks & BitAt(x + y * 8)) {
+					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f}, olc::CYAN);
 				}
 			}
 		}

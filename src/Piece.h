@@ -5,6 +5,7 @@
 namespace Mortan {
 	struct Position;
 
+	extern BitBoard pawnEyes[FileCount]; // attacks only
 	extern BitBoard kingEyes[SquareCount];
 	extern BitBoard knightEyes[SquareCount];
 	extern BitBoard eyeRays[DirectionCount][SquareCount];
@@ -13,7 +14,10 @@ namespace Mortan {
 	template<Direction dir>
 	BitBoard RayMobilityWithBlockers(Square square, BitBoard pieces);
 
-	inline Color PieceColor(Piece piece) {
+	BitBoard PieceQuites(const Position &, Square square);
+	BitBoard PieceAttacks(const Position &, Square square);
+
+	inline Color ColorOf(Piece piece) {
 		if (piece < BKing) {
 			return White;
 		}

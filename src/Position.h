@@ -28,6 +28,6 @@ namespace Mortan {
 
 		int Preassure(Square, Color myColor); // apex search
 
-		void DoPly(Ply); // and recalcs
+		void DoPly(Ply);
 	};
 }

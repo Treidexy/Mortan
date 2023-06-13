@@ -4,6 +4,7 @@
 
 using namespace Mortan;
 
+BitBoard Mortan::pawnEyes[FileCount];
 BitBoard Mortan::kingEyes[SquareCount];
 BitBoard Mortan::knightEyes[SquareCount];
 BitBoard Mortan::eyeRays[DirectionCount][SquareCount];
@@ -144,6 +145,16 @@ namespace {
 void Mortan::InitEyes() {
 	for (int y = 0; y < 8; y++) {
 		for (int x = 0; x < 8; x++) {
+			if (y == 0) {
+				pawnEyes[x] = 0;
+				if (x > 0) {
+					pawnEyes[x] |= BitAt(x - 1);
+				}
+				if (x < 7) {
+					pawnEyes[x] |= BitAt(x + 1);
+				}
+			}
+
 			InitRaysAt(x, y);
 
 			kingEyes[x + y * 8] = KingEyes(x, y);
