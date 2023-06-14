@@ -135,7 +135,7 @@ Position Position::FromFEN(const char * const fen) {
 		}
 	}
 
-	p++;
+	// space is already eaten
 	switch (c = *p++) {
 	case 'w':
 		position.opp = White;
@@ -250,6 +250,7 @@ int Position::Preassure(Square square, Color myColor, BitBoard *checkPath) const
 	return preassure;
 }
 
+// TODO: clean up
 bool Position::DoPly(Ply ply) {
 	if (!(byColor[opp] & BitAt(ply.from))) {
 		return false;
@@ -272,7 +273,34 @@ bool Position::DoPly(Ply ply) {
 
 	if (kind == King) {
 		castlingRights[opp] = CastlingNone;
-	}
+
+		// castling
+		if (ply.to - ply.from == 2) { // kingside
+			board |= BitAt(ply.from + 1);
+			board &= ~BitAt(ply.from + 3);
+
+			bySquare[ply.from + 1] = bySquare[ply.from + 3];
+			bySquare[ply.from + 3] = PieceNone;
+
+			byColor[opp] &= ~BitAt(ply.from + 3);
+			byColor[opp] |= BitAt(ply.from + 1);
+
+			byKind[ply.from + 1] = byKind[ply.from + 3];
+			byKind[ply.from + 3] = PieceKindNone;
+		} else if (ply.from - ply.to == 2) { // queenside
+			board |= BitAt(ply.from - 1);
+			board &= ~BitAt(ply.from - 4);
+
+			bySquare[ply.from - 1] = bySquare[ply.from - 4];
+			bySquare[ply.from - 4] = PieceNone;
+
+			byColor[opp] &= ~BitAt(ply.from - 4);
+			byColor[opp] |= BitAt(ply.from - 1);
+
+			byKind[ply.from - 1] = byKind[ply.from - 4];
+			byKind[ply.from - 4] = PieceKindNone;
+		}
+	} 
 
 	if (kind == Rook) {
 		if (ply.from / 8 == AFile) {

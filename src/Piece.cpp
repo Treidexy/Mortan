@@ -1,6 +1,6 @@
 #include "Piece.h"
 
-#include <functional>
+#include <iostream>
 
 #include "Position.h"
 
@@ -63,6 +63,30 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 		while (sq = PopWeak(&eyes)) {
 			if (position.Preassure(sq, color) == 0) {
 				mask |= BitAt(sq);
+			}
+		}
+
+		static constexpr BitBoard kingSide[ColorCount] = {
+			0x0000000000000060,
+			0x6000000000000000,
+		};
+
+		static constexpr BitBoard queenSide[ColorCount] = {
+			0x000000000000000E,
+			0x0E00000000000000,
+		};
+
+		// do not need to do bounds checking bc king cannot move if castlingRights
+		if (position.castlingRights[color] & Castling::KingSide) {
+			std::cout << "castshort" << (kingSide[color] & board) << ", " << position.Preassure(Square(square + 1), color) << ", " << position.Preassure(Square(square + 2), color) << "\n";
+			if (!(kingSide[color] & board || position.Preassure(Square(square + 1), color) || position.Preassure(Square(square + 2), color))) {
+				mask |= BitAt(square + 2);
+			}
+		}
+		if (position.castlingRights[color] & Castling::QueenSide) {
+			std::cout << "castlong" << (queenSide[color] & board) << ", " << position.Preassure(Square(square - 1), color) << ", " << position.Preassure(Square(square - 2), color) << "\n";
+			if (!(queenSide[color] & board || position.Preassure(Square(square - 1), color) || position.Preassure(Square(square - 2), color))) {
+				mask |= BitAt(square - 2);
 			}
 		}
 
