@@ -83,7 +83,7 @@ Position Position::FromFEN(const char * const fen) {
 			break;
 		case 'b':
 			position.bySquare[x + y * 8] = BBishop;
-			position.byColor[White] |= BitAt(x + y * 8);
+			position.byColor[Black] |= BitAt(x + y * 8);
 			position.byKind[Bishop] |= BitAt(x + y * 8);
 			position.board |= BitAt(x + y * 8);
 			x++;
@@ -109,7 +109,7 @@ Position Position::FromFEN(const char * const fen) {
 			}
 
 			x = 0;
-			y++;
+			y--;
 			break;
 
 		case '1':
@@ -124,6 +124,9 @@ Position Position::FromFEN(const char * const fen) {
 				position.bySquare[x + y * 8] = PieceNone;
 				x++;
 			}
+			break;
+		case ' ':
+			y--;
 			break;
 
 		default:

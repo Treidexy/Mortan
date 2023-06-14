@@ -127,7 +127,7 @@ BitBoard Mortan::PieceAttacks(const Position &position, Square square) {
 	case Pawn:
 	{
 		int delta = color == White ? 8 : -8;
-		return (pawnEyes[square % 8] << (square - square % 8 + delta)) & enemy;
+		return (pawnEyes[square % 8] << (square - square % 8 + delta)) & (enemy | BitAt(position.passant));
 	}
 
 	default:
