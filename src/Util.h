@@ -46,4 +46,8 @@ namespace Mortan {
 	inline int Count(BitBoard b) {
 		return (int) __popcnt64(b);
 	}
+
+	constexpr inline int PawnForward(Color c) {
+		return c == White ? 8 : -8;
+	}
 }

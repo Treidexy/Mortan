@@ -49,6 +49,10 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 	}
 
 	BitBoard board = position.board;
+	BitBoard thing = position.checkPath;
+	if (color != position.opp || !position.oppInCheck) {
+		thing = ~0ull;
+	}
 
 	switch (kind) {
 	case King:
@@ -73,34 +77,34 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
 			RayMobilityWithBlockers<SouthWest>(square, board))
-			& ~board;
+			& ~board & thing;
 	case Rook:
 		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |
 			RayMobilityWithBlockers<East>(square, board) |
 			RayMobilityWithBlockers<West>(square, board))
-			& ~board;
+			& ~board & thing;
 	case Bishop:
 		return (RayMobilityWithBlockers<NorthEast>(square, board) |
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
 			RayMobilityWithBlockers<SouthWest>(square, board))
-			& ~board;
+			& ~board & thing;
 	case Knight:
-		return knightEyes[square] & ~board;
+		return knightEyes[square] & ~board & thing;
 	case Pawn:
 	{
 		BitBoard mask = 0;
 
 		BitBoard homeMask = color == White ? 0x000000000000FF00 : 0x00FF000000000000;
-		int delta = color == White ? 8 : -8;
+		int delta = PawnForward(color);
 
 		mask |= BitAt(square + delta);
 		if (!(mask & board) && BitAt(square) & homeMask) {
 			mask |= BitAt(square + delta + delta);
 		}
 
-		return mask & ~board;
+		return mask & ~board & thing;
 	}
 
 	default:
@@ -112,8 +116,16 @@ BitBoard Mortan::PieceAttacks(const Position &position, Square square) {
 	Color color = ColorOf(position.bySquare[square]);
 	PieceKind kind = KindOf(position.bySquare[square]);
 
+	if (position.oppInDoubleCheck && color == position.opp) {
+		return 0;
+	}
+
 	BitBoard board = position.board;
 	BitBoard enemy = position.byColor[!color];
+	BitBoard thing = position.checkPath;
+	if (color != position.opp || !position.oppInCheck) {
+		thing = ~0ull;
+	}
 
 	switch (kind) {
 	case King:
@@ -127,7 +139,7 @@ BitBoard Mortan::PieceAttacks(const Position &position, Square square) {
 			}
 		}
 
-		return mask;
+		return mask & thing;
 	}
 	case Queen:
 		return (RayMobilityWithBlockers<North>(square, board) |
@@ -138,26 +150,24 @@ BitBoard Mortan::PieceAttacks(const Position &position, Square square) {
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
 			RayMobilityWithBlockers<SouthWest>(square, board))
-			& enemy;
+			& enemy & thing;
 	case Rook:
 		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |
 			RayMobilityWithBlockers<East>(square, board) |
 			RayMobilityWithBlockers<West>(square, board))
-			& enemy;
+			& enemy & thing;
 	case Bishop:
 		return (RayMobilityWithBlockers<NorthEast>(square, board) |
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
 			RayMobilityWithBlockers<SouthWest>(square, board))
-			& enemy;
+			& enemy & thing;
 	case Knight:
-		return knightEyes[square] & enemy;
+		return knightEyes[square] & enemy & thing;
 	case Pawn:
-	{
-		int delta = color == White ? 8 : -8;
-		return (pawnEyes[square % 8] << (square - square % 8 + delta)) & (enemy | BitAt(position.passant));
-	}
+		return (pawnEyes[square % 8] << (square - square % 8 + PawnForward(color)))
+			& (enemy | BitAt(position.passant)) & thing;
 
 	default:
 		abort();

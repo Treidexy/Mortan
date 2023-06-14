@@ -23,13 +23,14 @@ namespace Mortan {
 
 		bool oppInCheck;
 		bool oppInDoubleCheck;
+		BitBoard checkPath;
 
 		Color opp;
 
 		static Position FromFEN(const char *fen);
 		static Position Default();
 
-		int Preassure(Square, Color myColor) const; // apex search
+		int Preassure(Square, Color myColor, BitBoard *checkPath = nullptr) const; // apex search
 
 		bool DoPly(Ply); // returns true if the move was legal
 	};

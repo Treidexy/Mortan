@@ -200,8 +200,8 @@ Position Position::FromFEN(const char * const fen) {
 	//	p++;
 	//}
 
-	position.oppInCheck = !!position.Preassure(WeakBit(position.byKind[King] & position.byColor[position.opp]), position.opp);
-	position.oppInDoubleCheck = position.Preassure(WeakBit(position.byKind[King] & position.byColor[position.opp]), position.opp) > 1;
+	position.oppInCheck = !!position.Preassure(WeakBit(position.byKind[King] & position.byColor[position.opp]), position.opp, &position.checkPath);
+	position.oppInDoubleCheck = position.Preassure(WeakBit(position.byKind[King] & position.byColor[position.opp]), position.opp, &position.checkPath) > 1;
 
 	return position;	
 }
@@ -210,26 +210,42 @@ Position Position::Default() {
 	return FromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 }
 
-int Position::Preassure(Square square, Color myColor) const {
+int Position::Preassure(Square square, Color myColor, BitBoard *checkPath) const {
 	int preassure = 0;
+	if (checkPath)
+		*checkPath = 0;
 
-	preassure += Count(knightEyes[square] & byKind[Knight] & byColor[!myColor]);
+	// preassure += Count(knightEyes[square] & byKind[Knight] & byColor[!myColor]);
 
 	BitBoard lateralEnemies = (byKind[Rook] | byKind[Queen]) & byColor[!myColor];
 	BitBoard diagonalEnemies = (byKind[Bishop] | byKind[Queen]) & byColor[!myColor];
 
-	// double exclam to normalize to 1 or 0
-	preassure += !!(RayMobilityWithBlockers<North>(square, board) & lateralEnemies);
-	preassure += !!(RayMobilityWithBlockers<South>(square, board) & lateralEnemies);
-	preassure += !!(RayMobilityWithBlockers<East>(square, board) & lateralEnemies);
-	preassure += !!(RayMobilityWithBlockers<West>(square, board) & lateralEnemies);
+	auto fn = [&](BitBoard ray, BitBoard enemy) {
+		if (ray & enemy) {
+			preassure += Count(ray & enemy);
+			if (checkPath)
+				*checkPath |= ray;
+		}
+	};
 
-	preassure += !!(RayMobilityWithBlockers<NorthEast>(square, board) & diagonalEnemies);
-	preassure += !!(RayMobilityWithBlockers<NorthWest>(square, board) & diagonalEnemies);
-	preassure += !!(RayMobilityWithBlockers<SouthEast>(square, board) & diagonalEnemies);
-	preassure += !!(RayMobilityWithBlockers<SouthWest>(square, board) & diagonalEnemies);
+	fn(knightEyes[square] & byKind[Knight] & byColor[!myColor], ~0ull);
 
-	preassure += !!(kingEyes[WeakBit(byKind[King] & byColor[!myColor])] & BitAt(square));
+	fn(RayMobilityWithBlockers<North>(square, board), lateralEnemies);
+	fn(RayMobilityWithBlockers<South>(square, board), lateralEnemies);
+	fn(RayMobilityWithBlockers<East>(square, board), lateralEnemies);
+	fn(RayMobilityWithBlockers<West>(square, board), lateralEnemies);
+
+	fn(RayMobilityWithBlockers<NorthEast>(square, board), diagonalEnemies);
+	fn(RayMobilityWithBlockers<NorthWest>(square, board), diagonalEnemies);
+	fn(RayMobilityWithBlockers<SouthEast>(square, board), diagonalEnemies);
+	fn(RayMobilityWithBlockers<SouthWest>(square, board), diagonalEnemies);
+
+	// I sure hope this works, I didn't test it
+	if (!(!myColor == White && square / 8 == 0) || !(!myColor == Black && square / 8 == 7)) {
+		fn((pawnEyes[square % 8] << (square / 8 - 1) * PawnForward(!myColor)) & byKind[Pawn] & byColor[!myColor], ~0ull);
+	}
+
+	fn(kingEyes[square] & byKind[King] & byColor[!myColor], ~0ull);
 
 	return preassure;
 }
@@ -302,8 +318,8 @@ bool Position::DoPly(Ply ply) {
 	}
 
 	// TODO: optimize
-	oppInCheck = !!Preassure(WeakBit(byKind[King] & byColor[!opp]), !opp);
-	oppInDoubleCheck = Preassure(WeakBit(byKind[King] & byColor[!opp]), !opp) > 1;
+	oppInCheck = !!Preassure(WeakBit(byKind[King] & byColor[!opp]), !opp, &checkPath);
+	oppInDoubleCheck = Preassure(WeakBit(byKind[King] & byColor[!opp]), !opp, &checkPath) > 1;
 
 	PlyInfo info = {};
 	info.from = ply.from;
