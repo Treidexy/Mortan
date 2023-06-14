@@ -218,7 +218,7 @@ int Position::Preassure(Square square, Color myColor, BitBoard *checkPath) const
 	// preassure += Count(knightEyes[square] & byKind[Knight] & byColor[!myColor]);
 
 	// tinay hack, might fix later
-	BitBoard boardWithoutKings = board & ~(byKind[King] & byColor[myColor]);
+	BitBoard boardWithoutKing = board & ~(byKind[King] & byColor[myColor]);
 
 	BitBoard lateralEnemies = (byKind[Rook] | byKind[Queen]) & byColor[!myColor];
 	BitBoard diagonalEnemies = (byKind[Bishop] | byKind[Queen]) & byColor[!myColor];
@@ -233,15 +233,15 @@ int Position::Preassure(Square square, Color myColor, BitBoard *checkPath) const
 
 	fn(knightEyes[square] & byKind[Knight] & byColor[!myColor], ~0ull);
 
-	fn(RayMobilityWithBlockers<North>(square, boardWithoutKings), lateralEnemies);
-	fn(RayMobilityWithBlockers<South>(square, boardWithoutKings), lateralEnemies);
-	fn(RayMobilityWithBlockers<East>(square, boardWithoutKings), lateralEnemies);
-	fn(RayMobilityWithBlockers<West>(square, boardWithoutKings), lateralEnemies);
+	fn(RayMobilityWithBlockers<North>(square, boardWithoutKing), lateralEnemies);
+	fn(RayMobilityWithBlockers<South>(square, boardWithoutKing), lateralEnemies);
+	fn(RayMobilityWithBlockers<East>(square, boardWithoutKing), lateralEnemies);
+	fn(RayMobilityWithBlockers<West>(square, boardWithoutKing), lateralEnemies);
 
-	fn(RayMobilityWithBlockers<NorthEast>(square, boardWithoutKings), diagonalEnemies);
-	fn(RayMobilityWithBlockers<NorthWest>(square, boardWithoutKings), diagonalEnemies);
-	fn(RayMobilityWithBlockers<SouthEast>(square, boardWithoutKings), diagonalEnemies);
-	fn(RayMobilityWithBlockers<SouthWest>(square, boardWithoutKings), diagonalEnemies);
+	fn(RayMobilityWithBlockers<NorthEast>(square, boardWithoutKing), diagonalEnemies);
+	fn(RayMobilityWithBlockers<NorthWest>(square, boardWithoutKing), diagonalEnemies);
+	fn(RayMobilityWithBlockers<SouthEast>(square, boardWithoutKing), diagonalEnemies);
+	fn(RayMobilityWithBlockers<SouthWest>(square, boardWithoutKing), diagonalEnemies);
 
 	// I sure hope this works, I didn't test it
 	if (!(!myColor == White && square / 8 == 0) || !(!myColor == Black && square / 8 == 7)) {
