@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <iostream>
+#include <sstream>
 
 #include "Piece.h"
 #include "Util.h"
@@ -206,6 +207,102 @@ Position Position::FromFEN(const char * const fen) {
 	return position;	
 }
 
+std::string Position::GetFEN() {
+	std::stringstream fen;
+
+
+	for (int y = 7; y >= 0; y--) {
+		int freeCount = 0;
+		auto addPieceChar = [&](char c) {
+			if (freeCount) {
+				fen << char('0' + freeCount);
+				freeCount = 0;
+			}
+
+			fen << c;
+		};
+
+		for (int x = 0; x < 8; x++) {
+			switch (bySquare[x + y * 8]) {
+			case WKing:
+				addPieceChar('K');
+				break;
+			case WQueen:
+				addPieceChar('Q');
+				break;
+			case WRook:
+				addPieceChar('R');
+				break;
+			case WBishop:
+				addPieceChar('B');
+				break;
+			case WKnight:
+				addPieceChar('N');
+				break;
+			case WPawn:
+				addPieceChar('P');
+				break;
+
+			case BKing:
+				addPieceChar('k');
+				break;
+			case BQueen:
+				addPieceChar('q');
+				break;
+			case BRook:
+				addPieceChar('r');
+				break;
+			case BBishop:
+				addPieceChar('b');
+				break;
+			case BKnight:
+				addPieceChar('n');
+				break;
+			case BPawn:
+				addPieceChar('p');
+				break;
+
+			case PieceNone:
+				freeCount++;
+				break;
+			}
+		}
+
+		if (y != 0) {
+			addPieceChar('/');
+		}
+	}
+
+	fen << ' ' << (opp == White ? 'w' : 'b');
+	fen << ' ';
+
+	if (castlingRights[White] & KingSide) {
+		fen << 'K';
+	}
+	if (castlingRights[White] & QueenSide) {
+		fen << 'Q';
+	}
+	if (castlingRights[Black] & KingSide) {
+		fen << 'k';
+	}
+	if (castlingRights[Black] & QueenSide) {
+		fen << 'q';
+	}
+
+	if (!(castlingRights[White] | castlingRights[Black])) {
+		fen << '-';
+	}
+
+	fen << ' ';
+	if (passant == SquareNone) {
+		fen << '-';
+	} else {
+		fen << char('a' + passant % 8) << char('0' + passant / 8);
+	}
+	fen << " 0 1";
+	return fen.str();
+}
+
 Position Position::Default() {
 	return FromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 }
@@ -245,7 +342,7 @@ int Position::Preassure(Square square, Color myColor, BitBoard *checkPath) const
 
 	// I sure hope this works, I didn't test it
 	if (!(!myColor == White && square / 8 == 0) || !(!myColor == Black && square / 8 == 7)) {
-		fn((pawnEyes[square % 8] << (square / 8 - 1) * PawnForward(!myColor)) & byKind[Pawn] & byColor[!myColor], ~0ull);
+		fn((pawnEyes[square % 8] << ((square - square % 8) - PawnForward(!myColor))) & byKind[Pawn] & byColor[!myColor], ~0ull);
 	}
 
 	fn(kingEyes[square] & byKind[King] & byColor[!myColor], ~0ull);

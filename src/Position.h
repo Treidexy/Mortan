@@ -30,6 +30,8 @@ namespace Mortan {
 		static Position FromFEN(const char *fen);
 		static Position Default();
 
+		std::string GetFEN();
+
 		int Preassure(Square, Color myColor, BitBoard *checkPath = nullptr) const; // apex search
 
 		bool DoPly(Ply); // returns true if the move was legal

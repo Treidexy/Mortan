@@ -40,7 +40,8 @@ struct MortanApp : public olc::PixelGameEngine {
 	}
 
 	bool OnUserCreate() override {
-		position = Position::Default();
+		//position = Position::Default();
+		position = Position::FromFEN("rnbqkbnr/5ppp/8/4p3/p7/N3P2N/PBP1QPPP/R4K1R b kq e5 0 1");
 
 		decals[WKing] = new olc::Decal(sprites[WKing] = new olc::Sprite("res/w_king.png"));
 		decals[WQueen] = new olc::Decal(sprites[WQueen] = new olc::Sprite("res/w_queen.png"));
@@ -96,8 +97,12 @@ struct MortanApp : public olc::PixelGameEngine {
 	}
 
 	bool OnUserUpdate(float fElapsedTime) override {
-		if (position.opp == White) {
+		if (GetKey(olc::SPACE).bPressed) {
 			position.DoPly(NerdFish::MakeMove(position));
+		}
+
+		if (GetKey(olc::F).bPressed) {
+			std::cout << position.GetFEN() << "\n";
 		}
 
 		if (GetMouse(0).bPressed) {
@@ -156,7 +161,7 @@ struct MortanApp : public olc::PixelGameEngine {
 				if (GetKey(olc::CTRL).bHeld && selPiece != PieceNone && position.byKind[KindOf(selPiece)] & BitAt(x + y * 8)) {
 					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f}, olc::DARK_RED);
 				}
-				if (GetKey(olc::F).bHeld && position.Preassure(Square(x + y * 8), position.opp)) {
+				if (GetKey(olc::E).bHeld && position.Preassure(Square(x + y * 8), position.opp)) {
 					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f}, olc::DARK_RED);
 				}
 			}

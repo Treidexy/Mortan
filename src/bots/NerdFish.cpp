@@ -50,7 +50,7 @@ Ply NerdFish::MakeMove(const Position &position) {
 		MAKE_MOVE_IF_CAN(B1Sq);
 	}
 
-	iter = ally;
+	iter = ally & ~position.byKind[Rook];
 	while (iter) {
 		Square square = PopWeak(&iter);
 		MAKE_MOVE_IF_CAN(square);
