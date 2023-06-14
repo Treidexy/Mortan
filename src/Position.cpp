@@ -226,7 +226,7 @@ int Position::Preassure(Square square, Color myColor) const {
 	preassure += !!(RayMobilityWithBlockers<SouthEast>(square, board) & diagonalEnemies);
 	preassure += !!(RayMobilityWithBlockers<SouthWest>(square, board) & diagonalEnemies);
 
-	preassure += kingEyes[WeakBit(byKind[King] & byColor[!myColor])] & BitAt(square);
+	preassure += !!(kingEyes[WeakBit(byKind[King] & byColor[!myColor])] & BitAt(square));
 
 	return preassure;
 }
