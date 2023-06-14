@@ -236,6 +236,7 @@ bool Position::DoPly(Ply ply) {
 
 	PieceKind kind = KindOf(bySquare[ply.from]);
 	PieceKind captureKind = KindOf(bySquare[ply.to]);
+	Square captureSquare = ply.to;
 
 	// veryfy ply
 	if (captureKind != PieceKindNone || (kind == Pawn && ply.from % 8 - ply.to % 8 != 0)) {
@@ -260,24 +261,32 @@ bool Position::DoPly(Ply ply) {
 		}
 	}
 
+	bool enPassant = false;
 	if (kind == Pawn && ply.to == passant) {
+		enPassant = true;
 		captureKind = Pawn; // hard coded gang!
+		captureSquare = Square(passant + (opp == White ? -8 : 8));
+
+		// I might wanna put this somewhere else
+		bySquare[passant] = PieceNone;
 	}
 
+	board &= ~BitAt(captureSquare);
 	board &= ~BitAt(ply.from);
 	board |= BitAt(ply.to);
 
+	bySquare[captureSquare] = PieceNone;
 	bySquare[ply.to] = bySquare[ply.from];
 	bySquare[ply.from] = PieceNone;
 	
 	byColor[opp] &= ~BitAt(ply.from);
 	byColor[opp] |= BitAt(ply.to);
-	byColor[!opp] &= ~BitAt(ply.to);
+	byColor[!opp] &= ~BitAt(captureSquare);
 
 	byKind[kind] &= ~BitAt(ply.from);
 	byKind[kind] |= BitAt(ply.to);
 	if (captureKind != PieceKindNone) {
-		byKind[captureKind] &= ~BitAt(ply.to);
+		byKind[captureKind] &= ~BitAt(captureSquare);
 	}
 
 	passant = SquareNone;
@@ -291,6 +300,7 @@ bool Position::DoPly(Ply ply) {
 	info.from = ply.from;
 	info.to = ply.to;
 	info.passant = passant;
+	info.enPassant = enPassant;
 	info.castling = CastlingNone;
 	info.promotion = ply.promotion;
 
