@@ -5,6 +5,7 @@
 
 #include "Position.h"
 #include "Piece.h"
+#include "WeakBot.h"
 #include "Util.h"
 
 using namespace Mortan;
@@ -89,6 +90,10 @@ struct MortanApp : public olc::PixelGameEngine {
 	}
 
 	bool OnUserUpdate(float fElapsedTime) override {
+		if (position.opp == Black) {
+			position.DoPly(WeakBot::MakeMove(position));
+		}
+
 		if (GetMouse(0).bPressed) {
 			noted = 0;
 			arrows.clear();

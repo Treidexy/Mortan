@@ -335,11 +335,11 @@ bool Position::DoPly(Ply ply) {
 	byColor[opp] |= BitAt(ply.to);
 	byColor[!opp] &= ~BitAt(captureSquare);
 
-	byKind[kind] &= ~BitAt(ply.from);
-	byKind[kind] |= BitAt(ply.to);
 	if (captureKind != PieceKindNone) {
 		byKind[captureKind] &= ~BitAt(captureSquare);
 	}
+	byKind[kind] &= ~BitAt(ply.from);
+	byKind[kind] |= BitAt(ply.to);
 
 	passant = SquareNone;
 	if (kind == Pawn && (ply.to - ply.from) == 16) {

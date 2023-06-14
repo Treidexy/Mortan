@@ -78,13 +78,11 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 
 		// do not need to do bounds checking bc king cannot move if castlingRights
 		if (position.castlingRights[color] & Castling::KingSide) {
-			std::cout << "castshort" << (kingSide[color] & board) << ", " << position.Preassure(Square(square + 1), color) << ", " << position.Preassure(Square(square + 2), color) << "\n";
 			if (!(kingSide[color] & board || position.Preassure(Square(square + 1), color) || position.Preassure(Square(square + 2), color))) {
 				mask |= BitAt(square + 2);
 			}
 		}
 		if (position.castlingRights[color] & Castling::QueenSide) {
-			std::cout << "castlong" << (queenSide[color] & board) << ", " << position.Preassure(Square(square - 1), color) << ", " << position.Preassure(Square(square - 2), color) << "\n";
 			if (!(queenSide[color] & board || position.Preassure(Square(square - 1), color) || position.Preassure(Square(square - 2), color))) {
 				mask |= BitAt(square - 2);
 			}
