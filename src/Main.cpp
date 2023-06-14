@@ -80,7 +80,11 @@ struct MortanApp : public olc::PixelGameEngine {
 		Square fromSquare = selSquare;
 		selSquare = MouseSquare();
 		if (fromSquare != selSquare) {
-			position.DoPly(Ply {fromSquare, selSquare, PieceKindNone});
+			PieceKind promotion = PieceKindNone;
+			if (KindOf(selPiece) == Pawn && (selSquare / 8 == 0 || selSquare / 8 == 7)) {
+				promotion = Queen;
+			}
+			position.DoPly(Ply {fromSquare, selSquare, promotion});
 		}
 
 		selSquare = SquareNone;

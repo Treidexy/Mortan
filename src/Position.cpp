@@ -261,6 +261,7 @@ bool Position::DoPly(Ply ply) {
 
 	PieceKind kind = KindOf(bySquare[ply.from]);
 	PieceKind captureKind = KindOf(bySquare[ply.to]);
+	PieceKind newKind = kind;
 	Square captureSquare = ply.to;
 
 	// veryfy ply
@@ -314,43 +315,53 @@ bool Position::DoPly(Ply ply) {
 	}
 
 	bool enPassant = false;
-	if (kind == Pawn && ply.to == passant) {
-		enPassant = true;
-		captureKind = Pawn; // hard coded gang!
-		captureSquare = Square(passant + (opp == White ? -8 : 8));
+	if (kind == Pawn) {
+		if (ply.to / 8 == 0 || ply.to / 8 == 7) {
+			newKind = ply.promotion;
+		}
 
-		// I might wanna put this somewhere else
-		bySquare[passant] = PieceNone;
+		if (ply.to == passant) {
+			enPassant = true;
+			captureKind = Pawn; // hard coded gang!
+			captureSquare = Square(passant + (opp == White ? -8 : 8));
+
+			// I might wanna put this somewhere else
+			bySquare[passant] = PieceNone;
+		}
+
+		passant = SquareNone;
+		if (ply.to - ply.from == 16) {
+			passant = Square(ply.from + 8);
+		} else if (ply.from - ply.to == 16) {
+			passant = Square(ply.from - 8);
+		}
 	}
 
-	board &= ~BitAt(captureSquare);
-	board &= ~BitAt(ply.from);
-	board |= BitAt(ply.to);
-
-	bySquare[captureSquare] = PieceNone;
-	bySquare[ply.to] = bySquare[ply.from];
-	bySquare[ply.from] = PieceNone;
-	
-	byColor[opp] &= ~BitAt(ply.from);
-	byColor[opp] |= BitAt(ply.to);
-	byColor[!opp] &= ~BitAt(captureSquare);
 
 	if (captureKind != PieceKindNone) {
+		board &= ~BitAt(captureSquare);
+		bySquare[captureSquare] = PieceNone;
+		byColor[!opp] &= ~BitAt(captureSquare);
 		byKind[captureKind] &= ~BitAt(captureSquare);
 	}
-	byKind[kind] &= ~BitAt(ply.from);
-	byKind[kind] |= BitAt(ply.to);
 
-	passant = SquareNone;
-	if (kind == Pawn && (ply.to - ply.from) == 16) {
-		passant = Square(ply.from + 8);
-	} else if (kind == Pawn && (ply.to - ply.from) == -16) {
-		passant = Square(ply.from - 8);
-	}
+	board |= BitAt(ply.to);
+	board &= ~BitAt(ply.from);
+
+	bySquare[ply.to] = PieceOf(opp, newKind);
+	bySquare[ply.from] = PieceNone;
+	
+	byColor[opp] |= BitAt(ply.to);
+	byColor[opp] &= ~BitAt(ply.from);
+
+	byKind[newKind] |= BitAt(ply.to);
+	byKind[kind] &= ~BitAt(ply.from);
+
 
 	// TODO: optimize
 	oppInCheck = !!Preassure(WeakBit(byKind[King] & byColor[!opp]), !opp, &checkPath);
 	oppInDoubleCheck = Preassure(WeakBit(byKind[King] & byColor[!opp]), !opp, &checkPath) > 1;
+
 
 	PlyInfo info = {};
 	info.from = ply.from;
@@ -360,9 +371,10 @@ bool Position::DoPly(Ply ply) {
 	info.doubleCheck = oppInDoubleCheck;
 	info.enPassant = enPassant;
 	info.castling = CastlingNone;
-	info.promotion = ply.promotion;
+	info.promotion = newKind;
 
 	currMove.byColor[opp] = info;
+
 
 	if (opp == White) {
 		opp = Black;

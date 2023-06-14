@@ -17,6 +17,10 @@ namespace Mortan {
 	BitBoard PieceQuites(const Position &, Square square);
 	BitBoard PieceAttacks(const Position &, Square square);
 
+	inline Piece PieceOf(Color color, PieceKind kind) {
+		return (Piece) (color == White ? kind : kind + BKing);
+	}
+
 	inline Color ColorOf(Piece piece) {
 		if (piece < BKing) {
 			return White;

@@ -15,7 +15,7 @@ namespace Mortan {
 		ColorNone,
 	};
 
-	enum PieceKind {
+	enum PieceKind: int {
 		King,
 		Queen,
 		Rook,
@@ -27,7 +27,7 @@ namespace Mortan {
 		PieceKindNone,
 	};
 
-	enum Piece {
+	enum Piece: int {
 		WKing,
 		WQueen,
 		WRook,

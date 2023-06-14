@@ -15,12 +15,12 @@ Ply WeakBot::MakeMove(const Position &position) {
 	while (square = PopWeak(&pieces)) {
 		BitBoard bb = PieceAttacks(position, square);
 		if (bb) {
-			return {square, WeakBit(bb), PieceKindNone};
+			return {square, WeakBit(bb), Queen};
 		}
 
 		bb = PieceQuites(position, square);
 		if (bb) {
-			return {square, WeakBit(bb), PieceKindNone};
+			return {square, WeakBit(bb), Queen};
 		}
 	}
 
