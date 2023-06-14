@@ -1,8 +1,11 @@
 #include "Piece.h"
 
+#include <functional>
+
 #include "Position.h"
 
 #include "Util.h"
+
 
 using namespace Mortan;
 
@@ -45,7 +48,18 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 
 	switch (kind) {
 	case King:
-		return kingEyes[square] & ~board;
+	{
+		BitBoard eyes = kingEyes[square] & ~board;
+		BitBoard mask = 0;
+		Square sq;
+		while (sq = PopWeak(&eyes)) {
+			if (position.Preassure(sq, color) == 0) {
+				mask |= BitAt(sq);
+			}
+		}
+
+		return mask;
+	}
 	case Queen:
 		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |
@@ -99,7 +113,18 @@ BitBoard Mortan::PieceAttacks(const Position &position, Square square) {
 
 	switch (kind) {
 	case King:
-		return kingEyes[square] & enemy;
+	{
+		BitBoard eyes = kingEyes[square] & enemy;
+		BitBoard mask = 0;
+		Square sq;
+		while (sq = PopWeak(&eyes)) {
+			if (position.Preassure(sq, color) == 0) {
+				mask |= BitAt(sq);
+			}
+		}
+
+		return mask;
+	}
 	case Queen:
 		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |

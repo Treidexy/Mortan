@@ -145,6 +145,9 @@ struct MortanApp : public olc::PixelGameEngine {
 				if (GetKey(olc::CTRL).bHeld && selPiece != PieceNone && position.byKind[KindOf(selPiece)] & BitAt(x + y * 8)) {
 					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f}, olc::DARK_RED);
 				}
+				if (GetKey(olc::F).bHeld && position.Preassure(Square(x + y * 8), position.opp)) {
+					FillRectDecal({x * 90.0f, (7 - y) * 90.0f}, {90.0f, 90.0f}, olc::DARK_RED);
+				}
 			}
 		}
 

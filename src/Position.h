@@ -26,7 +26,7 @@ namespace Mortan {
 		static Position FromFEN(const char *fen);
 		static Position Default();
 
-		int Preassure(Square, Color myColor); // apex search
+		int Preassure(Square, Color myColor) const; // apex search
 
 		bool DoPly(Ply); // returns true if the move was legal
 	};

@@ -207,7 +207,7 @@ Position Position::Default() {
 	return FromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 }
 
-int Position::Preassure(Square square, Color myColor) {
+int Position::Preassure(Square square, Color myColor) const {
 	int preassure = 0;
 
 	preassure += Count(knightEyes[square] & byKind[Knight] & byColor[!myColor]);
@@ -225,6 +225,8 @@ int Position::Preassure(Square square, Color myColor) {
 	preassure += !!(RayMobilityWithBlockers<NorthWest>(square, board) & diagonalEnemies);
 	preassure += !!(RayMobilityWithBlockers<SouthEast>(square, board) & diagonalEnemies);
 	preassure += !!(RayMobilityWithBlockers<SouthWest>(square, board) & diagonalEnemies);
+
+	preassure += kingEyes[WeakBit(byKind[King] & byColor[!myColor])] & BitAt(square);
 
 	return preassure;
 }
