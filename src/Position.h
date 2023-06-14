@@ -21,6 +21,9 @@ namespace Mortan {
 		BitBoard byColor[ColorCount];
 		BitBoard byKind[PieceKindCount];
 
+		bool oppInCheck;
+		bool oppInDoubleCheck;
+
 		Color opp;
 
 		static Position FromFEN(const char *fen);

@@ -200,6 +200,9 @@ Position Position::FromFEN(const char * const fen) {
 	//	p++;
 	//}
 
+	position.oppInCheck = !!position.Preassure(WeakBit(position.byKind[King] & position.byColor[position.opp]), position.opp);
+	position.oppInDoubleCheck = position.Preassure(WeakBit(position.byKind[King] & position.byColor[position.opp]), position.opp) > 1;
+
 	return position;	
 }
 
@@ -298,10 +301,16 @@ bool Position::DoPly(Ply ply) {
 		passant = Square(ply.from - 8);
 	}
 
+	// TODO: optimize
+	oppInCheck = !!Preassure(WeakBit(byKind[King] & byColor[!opp]), !opp);
+	oppInDoubleCheck = Preassure(WeakBit(byKind[King] & byColor[!opp]), !opp) > 1;
+
 	PlyInfo info = {};
 	info.from = ply.from;
 	info.to = ply.to;
 	info.passant = passant;
+	info.check = oppInCheck;
+	info.doubleCheck = oppInDoubleCheck;
 	info.enPassant = enPassant;
 	info.castling = CastlingNone;
 	info.promotion = ply.promotion;

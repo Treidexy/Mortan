@@ -44,6 +44,10 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 	Color color = ColorOf(position.bySquare[square]);
 	PieceKind kind = KindOf(position.bySquare[square]);
 
+	if (kind != King && position.oppInDoubleCheck && color == position.opp) {
+		return 0;
+	}
+
 	BitBoard board = position.board;
 
 	switch (kind) {

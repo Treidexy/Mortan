@@ -17,6 +17,8 @@ namespace Mortan {
 		Square to;
 
 		Square passant;
+		bool check;
+		bool doubleCheck;
 		bool enPassant; // you should be able to figure this out...
 		Castling castling;
 		PieceKind promotion;

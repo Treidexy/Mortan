@@ -110,11 +110,13 @@ namespace Mortan {
 	};
 
 	// because C++ is FUCKING GARBAGE
-	inline Castling operator~ (Castling a) { return (Castling) ~(int) a; }
-	inline Castling operator| (Castling a, Castling b) { return (Castling) ((int) a | (int) b); }
-	inline Castling operator& (Castling a, Castling b) { return (Castling) ((int) a & (int) b); }
-	inline Castling operator^ (Castling a, Castling b) { return (Castling) ((int) a ^ (int) b); }
-	inline Castling &operator|= (Castling &a, Castling b) { return (Castling &) ((int &) a |= (int) b); }
-	inline Castling &operator&= (Castling &a, Castling b) { return (Castling &) ((int &) a &= (int) b); }
-	inline Castling &operator^= (Castling &a, Castling b) { return (Castling &) ((int &) a ^= (int) b); }
+	inline Color operator! (Color a) { return Color(!int(a)); }
+
+	inline Castling operator~ (Castling a) { return Castling(~int(a)); }
+	inline Castling operator| (Castling a, Castling b) { return Castling(int(a) | int(b)); }
+	inline Castling operator& (Castling a, Castling b) { return Castling(int(a) & int(b)); }
+	inline Castling operator^ (Castling a, Castling b) { return Castling(int(a) ^ int(b)); }
+	inline Castling &operator|= (Castling &a, Castling b) { return (Castling &) ((int &) a |= b); }
+	inline Castling &operator&= (Castling &a, Castling b) { return (Castling &) ((int &) a &= b); }
+	inline Castling &operator^= (Castling &a, Castling b) { return (Castling &) ((int &) a ^= b); }
 }
