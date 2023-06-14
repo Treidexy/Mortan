@@ -255,6 +255,10 @@ int Position::Preassure(Square square, Color myColor, BitBoard *checkPath) const
 
 // TODO: clean up
 bool Position::DoPly(Ply ply) {
+	if (ply.from == SquareNone) {
+		return false;
+	}
+
 	if (!(byColor[opp] & BitAt(ply.from))) {
 		return false;
 	}

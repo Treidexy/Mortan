@@ -10,6 +10,8 @@ namespace Mortan {
 		Square to;
 
 		PieceKind promotion;
+
+		static const Ply None;
 	};
 
 	struct PlyInfo {

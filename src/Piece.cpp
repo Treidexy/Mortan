@@ -60,7 +60,9 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 		BitBoard eyes = kingEyes[square] & ~board;
 		BitBoard mask = 0;
 		Square sq;
-		while (sq = PopWeak(&eyes)) {
+		while (eyes) {
+			sq = PopWeak(&eyes);
+
 			if (position.Preassure(sq, color) == 0) {
 				mask |= BitAt(sq);
 			}
@@ -155,7 +157,9 @@ BitBoard Mortan::PieceAttacks(const Position &position, Square square) {
 		BitBoard eyes = kingEyes[square] & enemy;
 		BitBoard mask = 0;
 		Square sq;
-		while (sq = PopWeak(&eyes)) {
+		while (eyes) {
+			sq = PopWeak(&eyes);
+
 			if (position.Preassure(sq, color) == 0) {
 				mask |= BitAt(sq);
 			}

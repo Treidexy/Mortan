@@ -27,7 +27,13 @@
     <ClCompile Include="src\Piece.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\WeakBot.cpp">
+    <ClCompile Include="src\bots\WeakBot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bots\NerdFish.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Moving.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,7 +56,10 @@
     <ClInclude Include="src\Moving.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\WeakBot.h">
+    <ClInclude Include="src\bots\WeakBot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bots\NerdFish.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
