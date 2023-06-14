@@ -79,7 +79,7 @@ struct MortanApp : public olc::PixelGameEngine {
 		Square fromSquare = selSquare;
 		selSquare = MouseSquare();
 		if (fromSquare != selSquare) {
-			position.DoPly(Ply {fromSquare, selSquare, false, CastlingNone, PieceKindNone});
+			position.DoPly(Ply {fromSquare, selSquare, PieceKindNone});
 		}
 
 		selSquare = SquareNone;

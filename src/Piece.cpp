@@ -36,6 +36,7 @@ template BitBoard Mortan::RayMobilityWithBlockers<NorthWest>(Square square, BitB
 template BitBoard Mortan::RayMobilityWithBlockers<SouthEast>(Square square, BitBoard board);
 template BitBoard Mortan::RayMobilityWithBlockers<SouthWest>(Square square, BitBoard board);
 
+// TODO: pins & checks
 BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 	Color color = ColorOf(position.bySquare[square]);
 	PieceKind kind = KindOf(position.bySquare[square]);
@@ -46,26 +47,26 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 	case King:
 		return kingEyes[square] & ~board;
 	case Queen:
-		return RayMobilityWithBlockers<North>(square, board) |
+		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |
 			RayMobilityWithBlockers<East>(square, board) |
 			RayMobilityWithBlockers<West>(square, board) |
 			RayMobilityWithBlockers<NorthEast>(square, board) |
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
-			RayMobilityWithBlockers<SouthWest>(square, board)
+			RayMobilityWithBlockers<SouthWest>(square, board))
 			& ~board;
 	case Rook:
-		return RayMobilityWithBlockers<North>(square, board) |
+		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |
 			RayMobilityWithBlockers<East>(square, board) |
-			RayMobilityWithBlockers<West>(square, board)
+			RayMobilityWithBlockers<West>(square, board))
 			& ~board;
 	case Bishop:
-		return RayMobilityWithBlockers<NorthEast>(square, board) |
+		return (RayMobilityWithBlockers<NorthEast>(square, board) |
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
-			RayMobilityWithBlockers<SouthWest>(square, board)
+			RayMobilityWithBlockers<SouthWest>(square, board))
 			& ~board;
 	case Knight:
 		return knightEyes[square] & ~board;
@@ -100,26 +101,26 @@ BitBoard Mortan::PieceAttacks(const Position &position, Square square) {
 	case King:
 		return kingEyes[square] & enemy;
 	case Queen:
-		return RayMobilityWithBlockers<North>(square, board) |
+		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |
 			RayMobilityWithBlockers<East>(square, board) |
 			RayMobilityWithBlockers<West>(square, board) |
 			RayMobilityWithBlockers<NorthEast>(square, board) |
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
-			RayMobilityWithBlockers<SouthWest>(square, board)
+			RayMobilityWithBlockers<SouthWest>(square, board))
 			& enemy;
 	case Rook:
-		return RayMobilityWithBlockers<North>(square, board) |
+		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |
 			RayMobilityWithBlockers<East>(square, board) |
-			RayMobilityWithBlockers<West>(square, board)
+			RayMobilityWithBlockers<West>(square, board))
 			& enemy;
 	case Bishop:
-		return RayMobilityWithBlockers<NorthEast>(square, board) |
+		return (RayMobilityWithBlockers<NorthEast>(square, board) |
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
-			RayMobilityWithBlockers<SouthWest>(square, board)
+			RayMobilityWithBlockers<SouthWest>(square, board))
 			& enemy;
 	case Knight:
 		return knightEyes[square] & enemy;

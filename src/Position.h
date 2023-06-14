@@ -9,12 +9,12 @@
 
 namespace Mortan {
 	struct Position {
-		Move currMove;
-		std::vector<Move> moves;
+		MoveInfo currMove;
+		std::vector<MoveInfo> moves;
 
 		Square passant;
 
-		Castling castling[ColorCount];
+		Castling castlingRights[ColorCount];
 
 		BitBoard board;
 		Piece bySquare[SquareCount];
@@ -28,6 +28,6 @@ namespace Mortan {
 
 		int Preassure(Square, Color myColor); // apex search
 
-		void DoPly(Ply);
+		bool DoPly(Ply); // returns true if the move was legal
 	};
 }

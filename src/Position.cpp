@@ -12,100 +12,104 @@ Position Position::FromFEN(const char * const fen) {
 	const char *p = fen;
 
 	char c;
-	int idx = 63;
+	int x = 0;
+	int y = 7;
 	Position position = {};
 
-	while (idx >= 0) {
+	while (y >= 0) {
 		switch (c = *p++) {
 		case 'K':
-			position.bySquare[idx] = WKing;
-			position.byColor[White] |= BitAt(idx);
-			position.byKind[King] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = WKing;
+			position.byColor[White] |= BitAt(x + y * 8);
+			position.byKind[King] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 		case 'Q':
-			position.bySquare[idx] = WQueen;
-			position.byColor[White] |= BitAt(idx);
-			position.byKind[Queen] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = WQueen;
+			position.byColor[White] |= BitAt(x + y * 8);
+			position.byKind[Queen] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 		case 'R':
-			position.bySquare[idx] = WRook;
-			position.byColor[White] |= BitAt(idx);
-			position.byKind[Rook] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = WRook;
+			position.byColor[White] |= BitAt(x + y * 8);
+			position.byKind[Rook] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 		case 'B':
-			position.bySquare[idx] = WBishop;
-			position.byColor[White] |= BitAt(idx);
-			position.byKind[Bishop] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = WBishop;
+			position.byColor[White] |= BitAt(x + y * 8);
+			position.byKind[Bishop] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 		case 'N':
-			position.bySquare[idx] = WKnight;
-			position.byColor[White] |= BitAt(idx);
-			position.byKind[Knight] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = WKnight;
+			position.byColor[White] |= BitAt(x + y * 8);
+			position.byKind[Knight] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 		case 'P':
-			position.bySquare[idx] = WPawn;
-			position.byColor[White] |= BitAt(idx);
-			position.byKind[Pawn] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = WPawn;
+			position.byColor[White] |= BitAt(x + y * 8);
+			position.byKind[Pawn] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 		case 'k':
-			position.bySquare[idx] = BKing;
-			position.byColor[Black] |= BitAt(idx);
-			position.byKind[King] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = BKing;
+			position.byColor[Black] |= BitAt(x + y * 8);
+			position.byKind[King] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 		case 'q':
-			position.bySquare[idx] = BQueen;
-			position.byColor[Black] |= BitAt(idx);
-			position.byKind[Queen] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = BQueen;
+			position.byColor[Black] |= BitAt(x + y * 8);
+			position.byKind[Queen] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 		case 'r':
-			position.bySquare[idx] = BRook;
-			position.byColor[Black] |= BitAt(idx);
-			position.byKind[Rook] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = BRook;
+			position.byColor[Black] |= BitAt(x + y * 8);
+			position.byKind[Rook] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 		case 'b':
-			position.bySquare[idx] = BBishop;
-			position.byColor[White] |= BitAt(idx);
-			position.byKind[Bishop] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = BBishop;
+			position.byColor[White] |= BitAt(x + y * 8);
+			position.byKind[Bishop] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 		case 'n':
-			position.bySquare[idx] = BKnight;
-			position.byColor[Black] |= BitAt(idx);
-			position.byKind[Knight] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = BKnight;
+			position.byColor[Black] |= BitAt(x + y * 8);
+			position.byKind[Knight] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 		case 'p':
-			position.bySquare[idx] = BPawn;
-			position.byColor[Black] |= BitAt(idx);
-			position.byKind[Pawn] |= BitAt(idx);
-			position.board |= BitAt(idx);
-			idx--;
+			position.bySquare[x + y * 8] = BPawn;
+			position.byColor[Black] |= BitAt(x + y * 8);
+			position.byKind[Pawn] |= BitAt(x + y * 8);
+			position.board |= BitAt(x + y * 8);
+			x++;
 			break;
 
 		case '/':
-			if (idx % 8 != 7) {
-				std::cerr << "error reading fen: idx = " << idx << ", but not end of rank\nFEN string: " << fen << "\n";
+			if (x != 8) {
+				std::cerr << "error reading fen: x = " << x << ", but not end of rank\nFEN string: " << fen << "\n";
 			}
+
+			x = 0;
+			y++;
 			break;
 
 		case '1':
@@ -117,8 +121,8 @@ Position Position::FromFEN(const char * const fen) {
 		case '7':
 		case '8':
 			while (c-- != '0') {
-				position.bySquare[idx] = PieceNone;
-				idx--;
+				position.bySquare[x + y * 8] = PieceNone;
+				x++;
 			}
 			break;
 
@@ -145,21 +149,21 @@ Position Position::FromFEN(const char * const fen) {
 	while (*p != ' ') {
 		switch (c = *p++) {
 		case 'K':
-			position.castling[White] |= KingSide;
+			position.castlingRights[White] |= KingSide;
 			break;
 		case 'Q':
-			position.castling[White] |= QueenSide;
+			position.castlingRights[White] |= QueenSide;
 			break;
 		case 'k':
-			position.castling[Black] |= KingSide;
+			position.castlingRights[Black] |= KingSide;
 			break;
 		case 'q':
-			position.castling[Black] |= QueenSide;
+			position.castlingRights[Black] |= QueenSide;
 			break;
 		case '-':
 			break;
 		default:
-			std::cerr << "error reading fen: unknown castling '" << c << "'\nFEN string: " << fen << "\n";
+			std::cerr << "error reading fen: unknown castlingRights '" << c << "'\nFEN string: " << fen << "\n";
 			break;
 		}
 	}
@@ -222,9 +226,40 @@ int Position::Preassure(Square square, Color myColor) {
 	return preassure;
 }
 
-void Position::DoPly(Ply ply) {
+bool Position::DoPly(Ply ply) {
+	if (!(byColor[opp] & BitAt(ply.from))) {
+		return false;
+	}
+
 	PieceKind kind = KindOf(bySquare[ply.from]);
-	PieceKind captureKind = KindOf(bySquare[ply.from]);
+	PieceKind captureKind = KindOf(bySquare[ply.to]);
+
+	// veryfy ply
+	if (captureKind != PieceKindNone || (kind == Pawn && ply.from % 8 - ply.to % 8 != 0)) {
+		if (!(PieceAttacks(*this, ply.from) & BitAt(ply.to))) {
+			return false;
+		}
+	} else {
+		if (!(PieceQuites(*this, ply.from) & BitAt(ply.to))) {
+			return false;
+		}
+	}
+
+	if (kind == King) {
+		castlingRights[opp] = CastlingNone;
+	}
+
+	if (kind == Rook) {
+		if (ply.from / 8 == AFile) {
+			castlingRights[opp] &= ~KingSide;
+		} else if (ply.from / 8 == HFile) {
+			castlingRights[opp] &= ~QueenSide;
+		}
+	}
+
+	if (kind == Pawn && ply.to == passant) {
+		captureKind = Pawn; // hard coded gang!
+	}
 
 	board &= ~BitAt(ply.from);
 	board |= BitAt(ply.to);
@@ -243,8 +278,20 @@ void Position::DoPly(Ply ply) {
 	}
 
 	passant = SquareNone;
+	if (kind == Pawn && (ply.to - ply.from) == 16) {
+		passant = Square(ply.from + 8);
+	} else if (kind == Pawn && (ply.to - ply.from) == -16) {
+		passant = Square(ply.from - 8);
+	}
 
-	currMove.byColor[opp] = ply;
+	PlyInfo info = {};
+	info.from = ply.from;
+	info.to = ply.to;
+	info.passant = passant;
+	info.castling = CastlingNone;
+	info.promotion = ply.promotion;
+
+	currMove.byColor[opp] = info;
 
 	if (opp == White) {
 		opp = Black;
@@ -253,4 +300,6 @@ void Position::DoPly(Ply ply) {
 		moves.push_back(currMove);
 		currMove = {}; // unnecessary?
 	}
+
+	return true;
 }
