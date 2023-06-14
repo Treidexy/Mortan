@@ -218,7 +218,7 @@ int Position::Preassure(Square square, Color myColor, BitBoard *checkPath) const
 	// preassure += Count(knightEyes[square] & byKind[Knight] & byColor[!myColor]);
 
 	// tinay hack, might fix later
-	BitBoard boardWithoutKings = board & ~byKind[King] & ~byColor[myColor];
+	BitBoard boardWithoutKings = board & ~(byKind[King] & byColor[myColor]);
 
 	BitBoard lateralEnemies = (byKind[Rook] | byKind[Queen]) & byColor[!myColor];
 	BitBoard diagonalEnemies = (byKind[Bishop] | byKind[Queen]) & byColor[!myColor];
