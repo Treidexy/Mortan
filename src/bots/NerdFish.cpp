@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <random>
+#include <iostream>
 
 #include "Position.h"
 #include "Piece.h"
@@ -9,16 +10,6 @@
 #include "Util.h"
 
 using namespace Mortan;
-
-#define MAKE_MOVE_IF_CAN(sq) { BitBoard bb = PieceAttacks(position, sq); \
-if (bb) {return {sq, WeakBit(bb), Queen};} \
-bb = PieceQuites(position, sq); \
-if (bb) { \
-int idx = std::rand() % Count(bb); \
-Square to; \
-for (int i = 0; i <= idx; i++) {to = PopWeak(&bb);} \
-return {sq, to, Queen};\
-} }
 
 namespace {
 	
@@ -28,32 +19,78 @@ Ply NerdFish::MakeMove(const Position &position) {
 	Color opp = position.opp;
 	BitBoard ally = position.byColor[opp];
 
-	BitBoard iter = ally;
-	while (iter) {
-		Square square = PopWeak(&iter);
+	BitBoard enemyKing = position.byKind[King] & position.byColor[!opp];
+	Square enemyKingSquare = WeakBit(enemyKing);
+	BitBoard enemyKingEyes = kingEyes[enemyKingSquare];
 
-		if (position.Preassure(square, opp) > 1) {
-			MAKE_MOVE_IF_CAN(square);
+	BitBoard rooks = position.byKind[Rook] & ally;
+	Square rook1 = WeakBit(rooks);
+	Square rook2 = StrongBit(rooks);
+
+	BitBoard rankMask1 = 0xFFull << (rook1 - rook1 % 8);
+	BitBoard rankMask2 = 0xFFull << (rook2 - rook2 % 8);
+
+	if (rook1 % 8 < enemyKingSquare % 8) {
+		if (rook2 % 8 < enemyKingSquare % 8) {
+			if (rook1 % 8 < rook2 % 8) {
+				if (BitAt(rook2) & enemyKingEyes) {
+					File file = File(rook2 % 8);
+					Square target = Square(file + Rank8);
+					if (0xFFFFFF0000000000 & enemyKing) {
+						target = Square(file + Rank1);
+						if (BitAt(target) & rankMask1) {
+							target = Square(file + Rank2);
+						}
+					}
+
+					return {rook2, target, PieceKindNone};
+				}
+
+				Square target = Square(rook1 - rook1 % 8 + rook2 % 8 + 1);
+
+				if (BitAt(target) & enemyKingEyes) {
+					// move rook to safe rank
+					File file = File(rook1 % 8);
+					target = Square(file + Rank8);
+					if (0xFFFFFF0000000000 & enemyKing) {
+						target = Square(file + Rank1);
+						if (BitAt(target) & rankMask2) {
+							target = Square(file + Rank2);
+						}
+					}
+				}
+
+				return { rook1, target, PieceKindNone };
+			} else {
+				if (BitAt(rook1) & enemyKingEyes) {
+					File file = File(rook1 % 8);
+					Square target = Square(file + Rank8);
+					if (0xFFFFFF0000000000 & enemyKing) {
+						target = Square(file + Rank1);
+						if (BitAt(target) & rankMask2) {
+							target = Square(file + Rank2);
+						}
+					}
+
+					return {rook1, target, PieceKindNone};
+				}
+
+				Square target = Square(rook2 - rook2 % 8 + rook1 % 8 + 1);
+				if (BitAt(target) & enemyKingEyes) {
+					// move rook to safe rank
+					File file = File(rook2 % 8);
+					target = Square(file + Rank8);
+					if (0xFFFFFF0000000000 & enemyKing) {
+						target = Square(file + Rank1);
+						if (BitAt(target) & rankMask1) {
+							target = Square(file + Rank2);
+						}
+					}
+				}
+
+				return { rook2, Square(rook2 - rook2 % 8 + rook1 % 8 + 1), PieceKindNone };
+			}
 		}
-	}
-
-	if (position.byKind[Pawn] & ally & BitAt(E2Sq)) {
-		MAKE_MOVE_IF_CAN(E2Sq);
-	}
-	if (position.byKind[Knight] & ally & BitAt(G1Sq)) {
-		MAKE_MOVE_IF_CAN(G1Sq);
-	}
-	if (position.byKind[Bishop] & ally & BitAt(F1Sq)) {
-		MAKE_MOVE_IF_CAN(F1Sq);
-	}
-	if (position.byKind[Knight] & ally & BitAt(B1Sq)) {
-		MAKE_MOVE_IF_CAN(B1Sq);
-	}
-
-	iter = ally & ~position.byKind[Rook];
-	while (iter) {
-		Square square = PopWeak(&iter);
-		MAKE_MOVE_IF_CAN(square);
 	}
 
 	return Ply::None;

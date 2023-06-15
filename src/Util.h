@@ -1,6 +1,8 @@
 #pragma once
 
 #include <intrin.h>
+#include <random>
+#include <iostream>
 
 #include "Types.h"
 
@@ -47,7 +49,26 @@ namespace Mortan {
 		return (int) __popcnt64(b);
 	}
 
+	inline Square RandSquare(BitBoard b) {
+		int idx = rand() % Count(b);
+		Square sq;
+		for (int i = 0; i <= idx; i++) {
+			sq = PopWeak(&b);
+		}
+		return sq;
+	}
+
 	constexpr inline int PawnForward(Color c) {
 		return c == White ? 8 : -8;
+	}
+
+	inline void DebugBitBoard(BitBoard b) {
+		for (int y = 7; y >= 0; y--) {
+			for (int x = 0; x < 8; x++) {
+				std::cout << ((b & BitAt(x + y * 8)) ? '1' : '0');
+			}
+			std::cout << '\n';
+		}
+		std::cout << '\n';
 	}
 }

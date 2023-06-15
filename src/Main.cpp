@@ -8,6 +8,7 @@
 #include "Util.h"
 
 #include "bots/WeakBot.h"
+#include "bots/NoFish.h"
 #include "bots/NerdFish.h"
 
 using namespace Mortan;
@@ -41,7 +42,7 @@ struct MortanApp : public olc::PixelGameEngine {
 
 	bool OnUserCreate() override {
 		//position = Position::Default();
-		position = Position::FromFEN("rnbqkbnr/5ppp/8/4p3/p7/N3P2N/PBP1QPPP/R4K1R b kq e5 0 1");
+		position = Position::FromFEN("1R6/8/5k2/8/8/8/R7/8 w - - 0 1");
 
 		decals[WKing] = new olc::Decal(sprites[WKing] = new olc::Sprite("res/w_king.png"));
 		decals[WQueen] = new olc::Decal(sprites[WQueen] = new olc::Sprite("res/w_queen.png"));
@@ -56,6 +57,8 @@ struct MortanApp : public olc::PixelGameEngine {
 		decals[BBishop] = new olc::Decal(sprites[BBishop] = new olc::Sprite("res/b_bishop.png"));
 		decals[BKnight] = new olc::Decal(sprites[BKnight] = new olc::Sprite("res/b_knight.png"));
 		decals[BPawn] = new olc::Decal(sprites[BPawn] = new olc::Sprite("res/b_pawn.png"));
+
+		srand(time(NULL));
 
 		return true;
 	}
@@ -99,6 +102,9 @@ struct MortanApp : public olc::PixelGameEngine {
 	bool OnUserUpdate(float fElapsedTime) override {
 		if (GetKey(olc::SPACE).bPressed) {
 			position.DoPly(NerdFish::MakeMove(position));
+		}
+		if (GetKey(olc::ENTER).bPressed) {
+			position.DoPly(NoFish::MakeMove(position));
 		}
 
 		if (GetKey(olc::F).bPressed) {

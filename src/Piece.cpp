@@ -165,7 +165,7 @@ BitBoard Mortan::PieceAttacks(const Position &position, Square square) {
 			}
 		}
 
-		return mask & thing;
+		return mask & enemy;
 	}
 	case Queen:
 		return (RayMobilityWithBlockers<North>(square, board) |
