@@ -5,6 +5,7 @@
 
 #include "Position.h"
 #include "Piece.h"
+#include "Nav.h"
 #include "Util.h"
 
 #include "bots/WeakBot.h"
@@ -12,6 +13,9 @@
 #include "bots/NerdFish.h"
 
 using namespace Mortan;
+
+namespace {
+}
 
 struct Arrow {
 	Square from;

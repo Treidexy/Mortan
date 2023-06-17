@@ -7,12 +7,12 @@
 #include "Position.h"
 #include "Piece.h"
 #include "Types.h"
+#include "Nav.h"
 #include "Util.h"
 
 using namespace Mortan;
 
 namespace {
-	
 }
 
 Ply NerdFish::MakeMove(const Position &position) {
@@ -23,73 +23,34 @@ Ply NerdFish::MakeMove(const Position &position) {
 	Square enemyKingSquare = WeakBit(enemyKing);
 	BitBoard enemyKingEyes = kingEyes[enemyKingSquare];
 
-	BitBoard rooks = position.byKind[Rook] & ally;
-	Square rook1 = WeakBit(rooks);
-	Square rook2 = StrongBit(rooks);
+	// me see check, me take check
+	BitBoard rookLike = (position.byKind[Rook] | position.byKind[Queen]) & ally;
+	while (rookLike) {
+		Square square = PopWeak(&rookLike);
 
-	BitBoard rankMask1 = 0xFFull << (rook1 - rook1 % 8);
-	BitBoard rankMask2 = 0xFFull << (rook2 - rook2 % 8);
+		if (rand() % 2 && !(TaxiPathLateral(square, enemyKingSquare) & position.board)) {
+			return {square, LateralJoint(square, enemyKingSquare), PieceKindNone};
+		}
+		if (!(TaxiPathLateral(enemyKingSquare, square) & position.board)) {
+			return {square, LateralJoint(enemyKingSquare, square), PieceKindNone};
+		}
+		if (!(TaxiPathLateral(square, enemyKingSquare) & position.board)) {
+			return {square, LateralJoint(square, enemyKingSquare), PieceKindNone};
+		}
+	}
 
-	if (rook1 % 8 < enemyKingSquare % 8) {
-		if (rook2 % 8 < enemyKingSquare % 8) {
-			if (rook1 % 8 < rook2 % 8) {
-				if (BitAt(rook2) & enemyKingEyes) {
-					File file = File(rook2 % 8);
-					Square target = Square(file + Rank8);
-					if (0xFFFFFF0000000000 & enemyKing) {
-						target = Square(file + Rank1);
-						if (BitAt(target) & rankMask1) {
-							target = Square(file + Rank2);
-						}
-					}
+	BitBoard bishopLike = (position.byKind[Bishop] | position.byKind[Queen]) & ally;
+	while (bishopLike) {
+		Square square = PopWeak(&bishopLike);
 
-					return {rook2, target, PieceKindNone};
-				}
-
-				Square target = Square(rook1 - rook1 % 8 + rook2 % 8 + 1);
-
-				if (BitAt(target) & enemyKingEyes) {
-					// move rook to safe rank
-					File file = File(rook1 % 8);
-					target = Square(file + Rank8);
-					if (0xFFFFFF0000000000 & enemyKing) {
-						target = Square(file + Rank1);
-						if (BitAt(target) & rankMask2) {
-							target = Square(file + Rank2);
-						}
-					}
-				}
-
-				return { rook1, target, PieceKindNone };
-			} else {
-				if (BitAt(rook1) & enemyKingEyes) {
-					File file = File(rook1 % 8);
-					Square target = Square(file + Rank8);
-					if (0xFFFFFF0000000000 & enemyKing) {
-						target = Square(file + Rank1);
-						if (BitAt(target) & rankMask2) {
-							target = Square(file + Rank2);
-						}
-					}
-
-					return {rook1, target, PieceKindNone};
-				}
-
-				Square target = Square(rook2 - rook2 % 8 + rook1 % 8 + 1);
-				if (BitAt(target) & enemyKingEyes) {
-					// move rook to safe rank
-					File file = File(rook2 % 8);
-					target = Square(file + Rank8);
-					if (0xFFFFFF0000000000 & enemyKing) {
-						target = Square(file + Rank1);
-						if (BitAt(target) & rankMask1) {
-							target = Square(file + Rank2);
-						}
-					}
-				}
-
-				return { rook2, Square(rook2 - rook2 % 8 + rook1 % 8 + 1), PieceKindNone };
-			}
+		if (rand() % 2 && !(TaxiPathDiagonal(square, enemyKingSquare) & position.board)) {
+			return {square, DiagonalJoint(square, enemyKingSquare), PieceKindNone};
+		}
+		if (!(TaxiPathDiagonal(enemyKingSquare, square) & position.board)) {
+			return {square, DiagonalJoint(enemyKingSquare, square), PieceKindNone};
+		}
+		if (!(TaxiPathDiagonal(square, enemyKingSquare) & position.board)) {
+			return {square, DiagonalJoint(square, enemyKingSquare), PieceKindNone};
 		}
 	}
 

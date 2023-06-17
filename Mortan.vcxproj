@@ -148,6 +148,7 @@
     <ClCompile Include="src\Eyes.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Moving.cpp" />
+    <ClCompile Include="src\Nav.cpp" />
     <ClCompile Include="src\Piece.cpp" />
     <ClCompile Include="src\Position.cpp" />
     <ClCompile Include="src\bots\WeakBot.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="src\bots\NoFish.h" />
     <ClInclude Include="src\bots\WeakBot.h" />
     <ClInclude Include="src\Moving.h" />
+    <ClInclude Include="src\Nav.h" />
     <ClInclude Include="src\olcPixelGameEngine.h" />
     <ClInclude Include="src\Piece.h" />
     <ClInclude Include="src\Position.h" />
