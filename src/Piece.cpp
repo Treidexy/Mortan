@@ -39,25 +39,9 @@ template BitBoard Mortan::RayMobilityWithBlockers<NorthWest>(Square square, BitB
 template BitBoard Mortan::RayMobilityWithBlockers<SouthEast>(Square square, BitBoard board);
 template BitBoard Mortan::RayMobilityWithBlockers<SouthWest>(Square square, BitBoard board);
 
-// TODO: pins & checks
-BitBoard Mortan::PieceQuites(const Position &position, Square square) {
-	Color color = ColorOf(position.bySquare[square]);
-	PieceKind kind = KindOf(position.bySquare[square]);
-
-	if (kind != King && position.oppInDoubleCheck && color == position.opp) {
-		return 0;
-	}
-
-	BitBoard board = position.board;
-	BitBoard thing = position.checkPath;
-	if (color != position.opp || !position.oppInCheck) {
-		thing = ~0ull;
-	}
-
-	switch (kind) {
-	case King:
-	{
-		BitBoard eyes = kingEyes[square] & ~board;
+namespace {
+	BitBoard KingQuites(const Position &position, Square square, Color color) {
+		BitBoard eyes = kingEyes[square] & ~position.board;
 		BitBoard mask = 0;
 		Square sq;
 		while (eyes) {
@@ -80,18 +64,55 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 
 		// do not need to do bounds checking bc king cannot move if castlingRights
 		if (position.castlingRights[color] & Castling::KingSide) {
-			if (!(kingSide[color] & board || position.Preassure(Square(square + 1), color) || position.Preassure(Square(square + 2), color))) {
+			if (!(kingSide[color] & position.board || position.Preassure(Square(square + 1), color) || position.Preassure(Square(square + 2), color))) {
 				mask |= BitAt(square + 2);
 			}
 		}
 		if (position.castlingRights[color] & Castling::QueenSide) {
-			if (!(queenSide[color] & board || position.Preassure(Square(square - 1), color) || position.Preassure(Square(square - 2), color))) {
+			if (!(queenSide[color] & position.board || position.Preassure(Square(square - 1), color) || position.Preassure(Square(square - 2), color))) {
 				mask |= BitAt(square - 2);
 			}
 		}
 
 		return mask;
 	}
+
+	BitBoard KingAttacks(const Position &position, Square square, Color color, BitBoard enemy) {
+		BitBoard eyes = kingEyes[square] & enemy;
+		BitBoard mask = 0;
+		Square sq;
+		while (eyes) {
+			sq = PopWeak(&eyes);
+
+			if (position.Preassure(sq, color) == 0) {
+				mask |= BitAt(sq);
+			}
+		}
+
+		return mask & enemy;
+	}
+}
+
+// TODO: pins & checks
+BitBoard Mortan::PieceQuites(const Position &position, Square square) {
+	Color color = ColorOf(position.bySquare[square]);
+	PieceKind kind = KindOf(position.bySquare[square]);
+
+	if (kind == King) {
+		return KingQuites(position, square, color);
+	}
+
+	if (position.oppInDoubleCheck && color == position.opp) {
+		return 0;
+	}
+
+	BitBoard board = position.board;
+	BitBoard thing = position.checkPath;
+	if (color != position.opp || !position.oppInCheck) {
+		thing = ~0ull;
+	}
+
+	switch (kind) {
 	case Queen:
 		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |
@@ -139,34 +160,23 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 BitBoard Mortan::PieceAttacks(const Position &position, Square square) {
 	Color color = ColorOf(position.bySquare[square]);
 	PieceKind kind = KindOf(position.bySquare[square]);
+	BitBoard enemy = position.byColor[!color];
+
+	if (kind == King) {
+		return KingAttacks(position, square, color, enemy);
+	}
 
 	if (position.oppInDoubleCheck && color == position.opp) {
 		return 0;
 	}
 
 	BitBoard board = position.board;
-	BitBoard enemy = position.byColor[!color];
 	BitBoard thing = position.checkPath;
 	if (color != position.opp || !position.oppInCheck) {
 		thing = ~0ull;
 	}
 
 	switch (kind) {
-	case King:
-	{
-		BitBoard eyes = kingEyes[square] & enemy;
-		BitBoard mask = 0;
-		Square sq;
-		while (eyes) {
-			sq = PopWeak(&eyes);
-
-			if (position.Preassure(sq, color) == 0) {
-				mask |= BitAt(sq);
-			}
-		}
-
-		return mask & enemy;
-	}
 	case Queen:
 		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |
