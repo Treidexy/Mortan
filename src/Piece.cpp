@@ -106,10 +106,44 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 		return 0;
 	}
 
+	BitBoard ally = position.byColor[color];
+	Square king = WeakBit(position.byKind[King] & ally);
 	BitBoard board = position.board;
 	BitBoard thing = position.checkPath;
 	if (color != position.opp || !position.oppInCheck) {
 		thing = ~0ull;
+	}
+
+	BitBoard lateralEnemies = (position.byKind[Rook] | position.byKind[Queen]) & position.byColor[!color];
+	BitBoard diagonalEnemies = (position.byKind[Bishop] | position.byKind[Queen]) & position.byColor[!color];
+
+	BitBoard pinPath = 0;
+	bool isPinned = false;
+	auto fn1 = [&](BitBoard bb) {
+		if (bb & BitAt(square) && bb & lateralEnemies && Count(bb & ally) == 1) {
+			isPinned = true;
+			pinPath |= bb;
+		}
+	};
+	auto fn2 = [&](BitBoard bb) {
+		if (bb & BitAt(square) && bb & diagonalEnemies && Count(bb & ally) == 1) {
+			isPinned = true;
+			pinPath |= bb;
+		}
+	};
+
+	fn1(RayMobilityWithBlockers<North>(king, lateralEnemies));
+	fn1(RayMobilityWithBlockers<South>(king, lateralEnemies));
+	fn1(RayMobilityWithBlockers<East>(king, lateralEnemies));
+	fn1(RayMobilityWithBlockers<West>(king, lateralEnemies));
+
+	fn2(RayMobilityWithBlockers<NorthEast>(king, diagonalEnemies));
+	fn2(RayMobilityWithBlockers<NorthWest>(king, diagonalEnemies));
+	fn2(RayMobilityWithBlockers<SouthEast>(king, diagonalEnemies));
+	fn2(RayMobilityWithBlockers<SouthWest>(king, diagonalEnemies));
+
+	if (!isPinned) {
+		pinPath = ~0ull;
 	}
 
 	switch (kind) {
@@ -122,21 +156,21 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
 			RayMobilityWithBlockers<SouthWest>(square, board))
-			& ~board & thing;
+			& ~board & thing & pinPath;
 	case Rook:
 		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |
 			RayMobilityWithBlockers<East>(square, board) |
 			RayMobilityWithBlockers<West>(square, board))
-			& ~board & thing;
+			& ~board & thing & pinPath;
 	case Bishop:
 		return (RayMobilityWithBlockers<NorthEast>(square, board) |
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
 			RayMobilityWithBlockers<SouthWest>(square, board))
-			& ~board & thing;
+			& ~board & thing & pinPath;
 	case Knight:
-		return knightEyes[square] & ~board & thing;
+		return knightEyes[square] & ~board & thing & pinPath;
 	case Pawn:
 	{
 		BitBoard mask = 0;
@@ -149,7 +183,7 @@ BitBoard Mortan::PieceQuites(const Position &position, Square square) {
 			mask |= BitAt(square + delta + delta);
 		}
 
-		return mask & ~board & thing;
+		return mask & ~board & thing & pinPath;
 	}
 
 	default:
@@ -170,10 +204,44 @@ BitBoard Mortan::PieceAttacks(const Position &position, Square square) {
 		return 0;
 	}
 
+	BitBoard ally = position.byColor[color];
+	Square king = WeakBit(position.byKind[King] & ally);
 	BitBoard board = position.board;
 	BitBoard thing = position.checkPath;
 	if (color != position.opp || !position.oppInCheck) {
 		thing = ~0ull;
+	}
+
+	BitBoard lateralEnemies = (position.byKind[Rook] | position.byKind[Queen]) & position.byColor[!color];
+	BitBoard diagonalEnemies = (position.byKind[Bishop] | position.byKind[Queen]) & position.byColor[!color];
+
+	BitBoard pinPath = 0;
+	bool isPinned = false;
+	auto fn1 = [&](BitBoard bb) {
+		if (bb & BitAt(square) && bb & lateralEnemies && Count(bb & ally) == 1) {
+			isPinned = true;
+			pinPath |= bb;
+		}
+	};
+	auto fn2 = [&](BitBoard bb) {
+		if (bb & BitAt(square) && bb & diagonalEnemies && Count(bb & ally) == 1) {
+			isPinned = true;
+			pinPath |= bb;
+		}
+	};
+
+	fn1(RayMobilityWithBlockers<North>(king, lateralEnemies));
+	fn1(RayMobilityWithBlockers<South>(king, lateralEnemies));
+	fn1(RayMobilityWithBlockers<East>(king, lateralEnemies));
+	fn1(RayMobilityWithBlockers<West>(king, lateralEnemies));
+
+	fn2(RayMobilityWithBlockers<NorthEast>(king, diagonalEnemies));
+	fn2(RayMobilityWithBlockers<NorthWest>(king, diagonalEnemies));
+	fn2(RayMobilityWithBlockers<SouthEast>(king, diagonalEnemies));
+	fn2(RayMobilityWithBlockers<SouthWest>(king, diagonalEnemies));
+
+	if (!isPinned) {
+		pinPath = ~0ull;
 	}
 
 	switch (kind) {
@@ -186,24 +254,24 @@ BitBoard Mortan::PieceAttacks(const Position &position, Square square) {
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
 			RayMobilityWithBlockers<SouthWest>(square, board))
-			& enemy & thing;
+			& enemy & thing & pinPath;
 	case Rook:
 		return (RayMobilityWithBlockers<North>(square, board) |
 			RayMobilityWithBlockers<South>(square, board) |
 			RayMobilityWithBlockers<East>(square, board) |
 			RayMobilityWithBlockers<West>(square, board))
-			& enemy & thing;
+			& enemy & thing & pinPath;
 	case Bishop:
 		return (RayMobilityWithBlockers<NorthEast>(square, board) |
 			RayMobilityWithBlockers<NorthWest>(square, board) |
 			RayMobilityWithBlockers<SouthEast>(square, board) |
 			RayMobilityWithBlockers<SouthWest>(square, board))
-			& enemy & thing;
+			& enemy & thing & pinPath;
 	case Knight:
-		return knightEyes[square] & enemy & thing;
+		return knightEyes[square] & enemy & thing & pinPath;
 	case Pawn:
 		return (pawnEyes[square % 8] << (square - square % 8 + PawnForward(color)))
-			& (enemy | BitAt(position.passant)) & thing;
+			& (enemy | BitAt(position.passant)) & thing & pinPath;
 
 	default:
 		abort();
