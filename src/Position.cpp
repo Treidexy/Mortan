@@ -429,8 +429,10 @@ bool Position::DoPly(Ply ply) {
 			// I might wanna put this somewhere else
 			bySquare[passant] = PieceNone;
 		}
+	}
 
-		passant = SquareNone;
+	passant = SquareNone;
+	if (kind == Pawn) {
 		if (ply.to - ply.from == 16) {
 			passant = Square(ply.from + 8);
 		} else if (ply.from - ply.to == 16) {

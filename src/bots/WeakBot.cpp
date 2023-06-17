@@ -12,7 +12,8 @@ Ply WeakBot::MakeMove(const Position &position) {
 	BitBoard pieces = position.byColor[position.opp];
 
 	while (pieces) {
-		Square square = PopWeak(&pieces);
+		Square square = RandSquare(pieces);
+		pieces &= ~BitAt(square);
 
 		BitBoard bb = PieceAttacks(position, square);
 		if (bb) {

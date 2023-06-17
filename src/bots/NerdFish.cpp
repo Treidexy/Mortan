@@ -23,19 +23,27 @@ Ply NerdFish::MakeMove(const Position &position) {
 	Square enemyKingSquare = WeakBit(enemyKing);
 	BitBoard enemyKingEyes = kingEyes[enemyKingSquare];
 
-	// me see check, me take check
+	std::vector<Ply> checks;
+
+	BitBoard iter = ally;
+	while (iter) {
+		Square square = PopWeak(&iter);
+
+		BitBoard attacks = PieceAttacks(position, square);
+		BitBoard quites = PieceQuites(position, square);
+
+
+	}
+
 	BitBoard rookLike = (position.byKind[Rook] | position.byKind[Queen]) & ally;
 	while (rookLike) {
 		Square square = PopWeak(&rookLike);
 
-		if (rand() % 2 && !(TaxiPathLateral(square, enemyKingSquare) & position.board)) {
-			return {square, LateralJoint(square, enemyKingSquare), PieceKindNone};
-		}
 		if (!(TaxiPathLateral(enemyKingSquare, square) & position.board)) {
-			return {square, LateralJoint(enemyKingSquare, square), PieceKindNone};
+			checks.push_back(Ply {square, LateralJoint(enemyKingSquare, square), PieceKindNone});
 		}
 		if (!(TaxiPathLateral(square, enemyKingSquare) & position.board)) {
-			return {square, LateralJoint(square, enemyKingSquare), PieceKindNone};
+			checks.push_back(Ply {square, LateralJoint(square, enemyKingSquare), PieceKindNone});
 		}
 	}
 
@@ -43,14 +51,11 @@ Ply NerdFish::MakeMove(const Position &position) {
 	while (bishopLike) {
 		Square square = PopWeak(&bishopLike);
 
-		if (rand() % 2 && !(TaxiPathDiagonal(square, enemyKingSquare) & position.board)) {
-			return {square, DiagonalJoint(square, enemyKingSquare), PieceKindNone};
-		}
 		if (!(TaxiPathDiagonal(enemyKingSquare, square) & position.board)) {
-			return {square, DiagonalJoint(enemyKingSquare, square), PieceKindNone};
+			checks.push_back(Ply {square, DiagonalJoint(enemyKingSquare, square), PieceKindNone});
 		}
 		if (!(TaxiPathDiagonal(square, enemyKingSquare) & position.board)) {
-			return {square, DiagonalJoint(square, enemyKingSquare), PieceKindNone};
+			checks.push_back(Ply {square, DiagonalJoint(square, enemyKingSquare), PieceKindNone});
 		}
 	}
 

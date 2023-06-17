@@ -45,8 +45,7 @@ struct MortanApp : public olc::PixelGameEngine {
 	}
 
 	bool OnUserCreate() override {
-		//position = Position::Default();
-		position = Position::FromFEN("1R6/8/5k2/8/8/8/R7/8 w - - 0 1");
+		position = Position::Default();
 
 		decals[WKing] = new olc::Decal(sprites[WKing] = new olc::Sprite("res/w_king.png"));
 		decals[WQueen] = new olc::Decal(sprites[WQueen] = new olc::Sprite("res/w_queen.png"));
@@ -105,10 +104,10 @@ struct MortanApp : public olc::PixelGameEngine {
 
 	bool OnUserUpdate(float fElapsedTime) override {
 		if (GetKey(olc::SPACE).bPressed) {
-			position.DoPly(NerdFish::MakeMove(position));
+			position.DoPly(NoFish::MakeMove(position));
 		}
 		if (GetKey(olc::ENTER).bPressed) {
-			position.DoPly(NoFish::MakeMove(position));
+			position.DoPly(WeakBot::MakeMove(position));
 		}
 
 		if (GetKey(olc::F).bPressed) {
