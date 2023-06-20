@@ -74,6 +74,9 @@
     <ClInclude Include="src\Nav.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\bots\NoFishReasons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\b_bishop.png">

@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="src\bots\NerdFish.h" />
     <ClInclude Include="src\bots\NoFish.h" />
+    <ClInclude Include="src\bots\NoFishReasons.h" />
     <ClInclude Include="src\bots\WeakBot.h" />
     <ClInclude Include="src\Moving.h" />
     <ClInclude Include="src\Nav.h" />

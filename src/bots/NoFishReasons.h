@@ -1,0 +1,8 @@
+REASON(Equal)
+REASON(EnPassant)
+REASON(BetterCapture)
+REASON(CenterControl)
+REASON(BetterTrade)
+REASON(IAteIt)
+REASON(NoHang)
+REASON(InDanger)
